@@ -18,9 +18,9 @@ class Kegiatan extends Model
         'kegiatan',
     ];
 
-    public function asset()
+    public function aset()
     {
-        return $this->belongsTo(Asset::class, 'id_aset');
+        return $this->belongsTo(Aset::class, 'id_aset');
     }
 
     public function user()

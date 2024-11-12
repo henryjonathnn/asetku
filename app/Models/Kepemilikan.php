@@ -13,8 +13,8 @@ class Kepemilikan extends Model
 
     protected $fillable = ['kepemilikan',];
 
-    public function asset()
+    public function aset()
     {
-        return $this->hasMany(Asset::class, 'id_kepemilikan');
+        return $this->hasMany(Aset::class, 'id_kepemilikan');
     }
 }
