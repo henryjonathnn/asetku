@@ -18,8 +18,9 @@ return new class extends Migration
             $table->string('serial_number')->nullable();
             $table->string('part_number')->nullable();
             $table->text('spek')->nullable();
+            $table->string('pengguna')->nullable();
             $table->year('tahun_kepemilikan')->nullable();
-            $table->foreignId('id_kepemilikan')->constrained('kepemilikans')->onDelete('cascade');
+            $table->foreignId('id_kepemilikan')->nullable()->constrained('kepemilikans')->onDelete('cascade');
             $table->timestamps();
 
             $table->index('created_at');

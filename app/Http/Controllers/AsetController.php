@@ -16,7 +16,7 @@ class AsetController extends Controller
      */
     public function index()
     {
-        $aset = Aset::with(['kepemilikan', 'kegiatan'])->latest()->get()->paginate(50);
+        $aset = Aset::with(['kepemilikan', 'kegiatan'])->latest()->get();
         $kepemilikan = Kepemilikan::all();
         return view('aset.index', compact('aset', 'kepemilikan'));
     }
@@ -29,6 +29,7 @@ class AsetController extends Controller
             'serial_number' => 'nullable|string|max:255',
             'part_number' => 'nullable|string|max:255',
             'spek' => 'nullable|string',
+            'pengguna' => 'nullable|string|max:255',
             'tahun_kepemilikan' => 'nullable|integer|digits:4',
             'id_kepemilikan' => 'nullable',
         ]);
@@ -40,15 +41,21 @@ class AsetController extends Controller
             ->with('generated_uuid', $aset->id);
     }
 
-    public function show(string $uuid)
+    public function detail(string $uuid)
     {
         $aset = Aset::with(['kepemilikan', 'kegiatan.user'])->findOrFail($uuid);
-        return view('aset.show', compact('aset'));
+        return view('aset._show', compact('aset'));
+    }
+
+    public function edit($uuid)
+    {
+        $aset = Aset::findOrFail($uuid);
+        $kepemilikan = Kepemilikan::all();
+        return view('aset._edit', compact('aset', 'kepemilikan'));
     }
 
     public function update(Request $request, string $uuid)
     {
-        $this->validateUser($request);
 
         $aset = Aset::findOrFail($uuid);
 
@@ -58,6 +65,7 @@ class AsetController extends Controller
             'serial_number' => 'nullable|string|max:255',
             'part_number' => 'nullable|string|max:255',
             'spek' => 'nullable|string',
+            'pengguna' => 'required|string|max:255',
             'tahun_kepemilikan' => 'nullable|integer|digits:4',
             'id_kepemilikan' => 'required|exists:kepemilikans,id',
         ]);
@@ -66,22 +74,5 @@ class AsetController extends Controller
 
         return redirect()->route('aset.index')
             ->with('success', 'Data aset berhasil diperbarui!');
-    }
-
-    public function validateUser(Request $request)
-    {
-        $request->validate([
-            'username' => 'required|string',
-            'password' => 'required|string',
-        ]);
-
-        $user = User::where('username', $request->username)->first();
-
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            throw ValidationException::withMessages([
-                'username' => ['Username atau password tidak valid.'],
-            ]);
-        }
-        return true;
     }
 }
