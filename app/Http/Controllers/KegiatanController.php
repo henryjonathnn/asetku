@@ -16,14 +16,17 @@ class KegiatanController extends Controller
      */
     public function index($uuid)
     {
-        $aset = Aset::findOrFail($uuid);
+        $aset = Aset::findOrFail($uuid); // Ensure the UUID is correctly passed
+        $kegiatan = Kegiatan::where('id_aset', $aset->id)->get();
         $user = User::all();
-        return view('kegiatan.index', compact('aset', 'user'));
+    
+        return view('kegiatan.index', compact('aset', 'kegiatan', 'user'));
     }
+    
 
     public function store(Request $request, $uuid)
     {
-        $aset = Aset::findOrFail($uuid);
+        $aset = Aset::where('id', $uuid)->firstOrFail(); // Pastikan UUID cocok
 
         $request->validate([
             'username' => 'required|string',
@@ -40,13 +43,15 @@ class KegiatanController extends Controller
         }
 
         Kegiatan::create([
-            'id_aset' => $aset->id,
+            'id_aset' => $aset->id, // Pastikan ini mengacu pada ID yang ada di tabel `asets`
             'id_user' => $user->id,
             'kegiatan' => $request->kegiatan,
         ]);
 
-        return redirect()->route('kegiatan.index');
+        // Redirect to the kegiatan.index route with the uuid
+        return redirect()->route('kegiatan.index', ['uuid' => $aset->id]);
     }
+
 
     public function show(string $id)
     {

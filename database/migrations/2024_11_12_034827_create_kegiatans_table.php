@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('kegiatans', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUlid('id_aset')->constrained('asets');
+            $table->foreignUuid('id_aset')->constrained('asets')->onDelete('cascade');
             $table->foreignId('id_user')->constrained('users');
             $table->string('kegiatan');
             $table->timestamps();

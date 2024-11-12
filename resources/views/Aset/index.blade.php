@@ -36,8 +36,9 @@
                                             onclick="loadAsetDetail('{{ $aset->id }}')">
                                             <i class="fas fa-eye"></i>
                                         </button>
-                                        <button type="button" class="btn btn-warning btn-sm text-white" data-bs-toggle="modal"
-                                            data-bs-target="#editAsetModal" data-aset-id="{{ $aset->id }}"
+                                        <button type="button" class="btn btn-warning btn-sm text-white"
+                                            data-bs-toggle="modal" data-bs-target="#editAsetModal"
+                                            data-aset-id="{{ $aset->id }}"
                                             onclick="loadAsetEdit('{{ $aset->id }}')">
                                             <i class="fas fa-pencil"></i>
                                         </button>
@@ -186,11 +187,7 @@
         }
 
         function loadBarcode(id) {
-            fetch(`/aset/${id}/barcode`)
-                .then(response => response.text())
-                .then(html => {
-                    document.getElementById('barcodeContent').innerHTML = html;
-                });
+            window.open(`/aset/${id}/barcode`, '_blank', 'width=400,height=400');
         }
     </script>
 @endpush
