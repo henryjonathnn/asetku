@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Aset;
 use App\Models\Kepemilikan;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 
 class AsetController extends Controller
 {
@@ -13,24 +16,11 @@ class AsetController extends Controller
      */
     public function index()
     {
-        $aset = Aset::with('kepemilikan')
-        ->orderBy('created_at', 'desc')
-        ->get();
-        return view('aset.index', compact('aset'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
+        $aset = Aset::with(['kepemilikan', 'kegiatan'])->latest()->get()->paginate(50);
         $kepemilikan = Kepemilikan::all();
-        return view('aset.create', compact('kepemilikan'));
+        return view('aset.index', compact('aset', 'kepemilikan'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -45,30 +35,23 @@ class AsetController extends Controller
 
         $aset = Aset::create($validated);
 
-        return redirect()->route('aset.index')->with('success', 'Data aset berhasil ditambahkan!');
+        return redirect()->route('aset.index')
+            ->with('success', 'Data aset berhasil ditambahkan!')
+            ->with('generated_uuid', $aset->id);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show(string $uuid)
     {
-
+        $aset = Aset::with(['kepemilikan', 'kegiatan.user'])->findOrFail($uuid);
+        return view('aset.show', compact('aset'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(Request $request, string $uuid)
     {
-        
-    }
+        $this->validateUser($request);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
+        $aset = Aset::findOrFail($uuid);
+
         $validated = $request->validate([
             'nama_barang' => 'required|string|max:255',
             'jenis' => 'required|string|max:255',
@@ -78,9 +61,27 @@ class AsetController extends Controller
             'tahun_kepemilikan' => 'nullable|integer|digits:4',
             'id_kepemilikan' => 'required|exists:kepemilikans,id',
         ]);
+
+        $aset->update($validated);
+
+        return redirect()->route('aset.index')
+            ->with('success', 'Data aset berhasil diperbarui!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    public function validateUser(Request $request)
+    {
+        $request->validate([
+            'username' => 'required|string',
+            'password' => 'required|string',
+        ]);
+
+        $user = User::where('username', $request->username)->first();
+
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            throw ValidationException::withMessages([
+                'username' => ['Username atau password tidak valid.'],
+            ]);
+        }
+        return true;
+    }
 }
