@@ -20,20 +20,21 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::middleware('auth')->group(function () {
+    Route::resource('aset', AsetController::class)->parameters([
+        'aset' => 'uuid'
+    ]);
+    Route::get('aset/{uuid}/detail', [AsetController::class, 'detail']);
+});
 
-Route::resource('aset', AsetController::class)->parameters([
-    'aset' => 'uuid'
-]);
-
-Route::get('aset/{uuid}/detail', [AsetController::class, 'detail']);
 Route::get('aset/{uuid}/barcode', [BarcodeController::class, 'generate'])->name('barcode.generate');
 
 Route::resource('kegiatan', KegiatanController::class);
 Route::get('aset/{uuid}/kegiatan', [KegiatanController::class, 'index'])->name('kegiatan.index');
-Route::post('aset/{uuid}/kegiatan', [KegiatanController::class, 'store'])->name('kegiatan.store');  
+Route::post('aset/{uuid}/kegiatan', [KegiatanController::class, 'store'])->name('kegiatan.store');
 Route::post('aset/{uuid}/update-from-kegiatan', [KegiatanController::class, 'asetUpdate'])->name('kegiatan.aset.update');
 
 // AUTH
-Route::get('/login', function() { return view('auth.login'); })->name('login');
-Route::post('/login', AuthController::class, 'login')->name('login');
-Route::post('/logout', AuthController::class, 'logout')->name('logout');
+Route::get('/login', [AuthController::class, 'loginForm']);
+Route::post('/login', [AuthController::class, 'login'])->name('login');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

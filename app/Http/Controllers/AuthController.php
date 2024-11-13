@@ -7,6 +7,11 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
+    public function loginForm()
+    {
+        return view('Auth.login');
+    }
+
     public function login(Request $request)
     {
         // Validasi input
@@ -21,7 +26,7 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             // Jika autentikasi berhasil
             $user = Auth::user();
-            return redirect()->intended('/dashboard')->with('success', 'Login berhasil!');
+            return redirect()->intended('/aset')->with('success', 'Login berhasil!');
         }
 
         // Jika autentikasi gagal

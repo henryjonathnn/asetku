@@ -21,7 +21,11 @@
 
         .main-content {
             padding: 20px;
-            margin-top: 20px;
+            margin: 12px auto
+        }
+
+        .navbar-collapse {
+            margin: 8px 28px;
         }
 
         .navbar-brand {
@@ -53,8 +57,8 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-success">
         <div class="container">
-            <a class="navbar-brand" href="#">RSUD Daha Husada Kediri</a>
             <div class="collapse navbar-collapse" id="navbarNav">
+                <a class="navbar-brand" href="#">RSUD Daha Husada Kediri</a>
 
                 <!-- User Menu -->
                 <ul class="navbar-nav ms-auto">
@@ -69,7 +73,7 @@
                                 <hr class="dropdown-divider">
                             </li>
                             <li>
-                                <form action="#" method="POST">
+                                <form action={{ route('logout') }} method="POST">
                                     @csrf
                                     <button type="submit" class="dropdown-item">
                                         <i class="fas fa-sign-out-alt"></i> Logout
