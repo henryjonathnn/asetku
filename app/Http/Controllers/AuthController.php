@@ -3,16 +3,41 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    public function login()
+    public function login(Request $request)
     {
-        // Buatkan sistem login yang bisa hanya bisa dilogin melalui username dan password yang terdaftar di model User
+        // Validasi input
+        $request->validate([
+            'username' => 'required',
+            'password' => 'required',
+        ]);
+
+        // Coba melakukan autentikasi
+        $credentials = $request->only('username', 'password');
+
+        if (Auth::attempt($credentials)) {
+            // Jika autentikasi berhasil
+            $user = Auth::user();
+            return redirect()->intended('/dashboard')->with('success', 'Login berhasil!');
+        }
+
+        // Jika autentikasi gagal
+        return back()->withErrors([
+            'username' => 'Username atau password yang Anda masukkan salah.',
+        ])->withInput($request->except('password'));
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
-        // Sistem logout pada umumnya
+        Auth::logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        return redirect('/')->with('success', 'Anda telah berhasil logout.');
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AsetController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BarcodeController;
 use App\Http\Controllers\KegiatanController;
 use Illuminate\Support\Facades\Route;
@@ -33,3 +34,6 @@ Route::post('aset/{uuid}/kegiatan', [KegiatanController::class, 'store'])->name(
 Route::post('aset/{uuid}/update-from-kegiatan', [KegiatanController::class, 'asetUpdate'])->name('kegiatan.aset.update');
 
 // AUTH
+Route::get('/login', function() { return view('auth.login'); })->name('login');
+Route::post('/login', AuthController::class, 'login')->name('login');
+Route::post('/logout', AuthController::class, 'logout')->name('logout');
