@@ -53,7 +53,7 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-success">
         <div class="container">
-            <a class="navbar-brand" href="#">Manajemen Aset RSUD Daha Husada Kediri</a>
+            <a class="navbar-brand" href="#">RSUD Daha Husada Kediri</a>
             <div class="collapse navbar-collapse" id="navbarNav">
 
                 <!-- User Menu -->

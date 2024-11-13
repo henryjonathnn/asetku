@@ -16,10 +16,12 @@ class AsetController extends Controller
      */
     public function index()
     {
-        $aset = Aset::with(['kepemilikan', 'kegiatan'])->latest()->get();
+        $aset = Aset::paginate(10); // Adjust the number of items per page as needed
         $kepemilikan = Kepemilikan::all();
+
         return view('aset.index', compact('aset', 'kepemilikan'));
     }
+
 
     public function store(Request $request)
     {
