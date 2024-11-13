@@ -19,8 +19,7 @@ class KegiatanController extends Controller
     {
         $aset = Aset::findOrFail($uuid); // Ensure the UUID is correctly passed
         $kegiatan = Kegiatan::with(['masterKegiatan', 'user'])
-            ->where('id_aset', $aset->id)
-            ->get();
+            ->where('id_aset', $aset->id)->latest('created_at')->paginate(10);
         $masterKegiatan = MasterKegiatan::all();
 
         return view('kegiatan.index', compact('aset', 'kegiatan', 'masterKegiatan'));

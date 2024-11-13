@@ -29,7 +29,7 @@ Route::middleware('auth')->group(function () {
 
 Route::get('aset/{uuid}/barcode', [BarcodeController::class, 'generate'])->name('barcode.generate');
 
-Route::resource('kegiatan', KegiatanController::class);
+// Route::resource('kegiatan', KegiatanController::class);
 Route::get('aset/{uuid}/kegiatan', [KegiatanController::class, 'index'])->name('kegiatan.index');
 Route::post('aset/{uuid}/kegiatan', [KegiatanController::class, 'store'])->name('kegiatan.store');
 Route::post('aset/{uuid}/update-from-kegiatan', [KegiatanController::class, 'asetUpdate'])->name('kegiatan.aset.update');
