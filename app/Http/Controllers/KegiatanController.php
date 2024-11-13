@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Aset;
 use App\Models\Kegiatan;
+use App\Models\MasterKegiatan;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -17,21 +18,24 @@ class KegiatanController extends Controller
     public function index($uuid)
     {
         $aset = Aset::findOrFail($uuid); // Ensure the UUID is correctly passed
-        $kegiatan = Kegiatan::where('id_aset', $aset->id)->get();
-        $user = User::all();
-    
-        return view('kegiatan.index', compact('aset', 'kegiatan', 'user'));
+        $kegiatan = Kegiatan::with(['masterKegiatan', 'user'])
+            ->where('id_aset', $aset->id)
+            ->get();
+        $masterKegiatan = MasterKegiatan::all();
+
+        return view('kegiatan.index', compact('aset', 'kegiatan', 'masterKegiatan'));
     }
-    
+
 
     public function store(Request $request, $uuid)
     {
-        $aset = Aset::where('id', $uuid)->firstOrFail(); // Pastikan UUID cocok
+        $aset = Aset::where('id', $uuid)->firstOrFail();
 
         $request->validate([
             'username' => 'required|string',
             'password' => 'required|string',
-            'kegiatan' => 'required|string',
+            'id_master_kegiatan' => 'required|exists:master_kegiatans,id',
+            'custom_kegiatan' => 'nullable|string|required_if:is_custom,1',
         ]);
 
         $user = User::where('username', $request->username)->first();
@@ -42,34 +46,21 @@ class KegiatanController extends Controller
             ]);
         }
 
+        // Get the selected MasterKegiatan
+        $masterKegiatan = MasterKegiatan::findOrFail($request->id_master_kegiatan);
+
+        // Create kegiatan with proper handling of custom_kegiatan
         Kegiatan::create([
-            'id_aset' => $aset->id, // Pastikan ini mengacu pada ID yang ada di tabel `asets`
+            'id_aset' => $aset->id,
             'id_user' => $user->id,
-            'kegiatan' => $request->kegiatan,
+            'id_master_kegiatan' => $masterKegiatan->id,
+            'custom_kegiatan' => $masterKegiatan->is_custom ? $request->custom_kegiatan : null,
         ]);
 
-        // Redirect to the kegiatan.index route with the uuid
-        return redirect()->route('kegiatan.index', ['uuid' => $aset->id]);
+        return redirect()->route('kegiatan.index', ['uuid' => $aset->id])
+            ->with('success', 'Kegiatan berhasil ditambahkan');
     }
 
-
-    public function show(string $id)
-    {
-        //
-    }
-
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
 
     public function validateUser(Request $request)
     {

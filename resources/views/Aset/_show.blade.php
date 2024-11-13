@@ -11,7 +11,7 @@
             <p><strong>Tahun:</strong> {{ $aset->tahun_kepemilikan ?? '-' }}</p>
             <p><strong>Kepemilikan:</strong> {{ $aset->kepemilikan->kepemilikan ?? '-' }}</p>
             {{-- ->format('d/m/Y H:i') --}}
-            <p><strong>Tanggal Dibuat:</strong> {{ $aset->created_at ?? $aset->updated_at ?? '-'}}</p>
+            <p><strong>Tanggal Dibuat:</strong> {{ $aset->created_at ?? ($aset->updated_at ?? '-') }}</p>
         </div>
     </div>
     <div class="row mt-3">
@@ -33,13 +33,24 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($aset->kegiatan as $kegiatan)
-                        <tr>
-                            <td>{{ $kegiatan->created_at->format('d/m/Y H:i') }}</td>
-                            <td>{{ $kegiatan->kegiatan }}</td>
-                            <td>{{ $kegiatan->user->name }}</td>
-                        </tr>
-                        @endforeach
+                        @forelse($aset->kegiatan as $index => $k)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $k->created_at->format('d-m-Y') }}</td>
+                                <td>
+                                    @if ($k->masterKegiatan->is_custom)
+                                        {{ $k->custom_kegiatan ?? '-'}}
+                                    @else
+                                        {{ $k->masterKegiatan->kegiatan }}
+                                    @endif
+                                </td>
+                                <td>{{ $k->user->name }}</td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4" class="text-center">Belum ada riwayat kegiatan</td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>

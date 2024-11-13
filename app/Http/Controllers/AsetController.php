@@ -43,7 +43,10 @@ class AsetController extends Controller
 
     public function detail(string $uuid)
     {
-        $aset = Aset::with(['kepemilikan', 'kegiatan.user'])->findOrFail($uuid);
+        $aset = Aset::with(['kegiatan' => function ($query) {
+            $query->with(['masterKegiatan', 'user'])
+                ->latest();
+        }])->findOrFail($uuid);
         return view('aset._show', compact('aset'));
     }
 

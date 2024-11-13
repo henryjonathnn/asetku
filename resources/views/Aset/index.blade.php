@@ -101,7 +101,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label>Pengguna</label>
-                                <input type="number" name="tahun_kepemilikan" class="form-control">
+                                <input type="text" name="pengguna" class="form-control">
                             </div>
                             <div class="col-md-6">
                                 <label>Kepemilikan</label>

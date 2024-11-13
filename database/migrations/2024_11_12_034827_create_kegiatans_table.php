@@ -15,7 +15,8 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('id_aset')->constrained('asets')->onDelete('cascade');
             $table->foreignId('id_user')->constrained('users');
-            $table->string('kegiatan');
+            $table->foreignId('id_master_kegiatan')->constrained('master_kegiatans');
+            $table->string('custom_kegiatan')->nullable(); // Untuk input bebas ketika memilih "Lainnya"
             $table->timestamps();
 
             $table->index('created_at');

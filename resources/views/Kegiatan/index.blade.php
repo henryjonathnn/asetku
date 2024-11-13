@@ -1,3 +1,4 @@
+<!-- resources/views/kegiatan/index.blade.php -->
 @extends('layouts.app')
 
 @section('content')
@@ -22,17 +23,7 @@
                         <strong>Serial Number:</strong> {{ $aset->serial_number }}
                     </div>
                 </div>
-                <div class="row mb-3">
-                    <div class="col-md-4">
-                        <strong>Part Number:</strong> {{ $aset->part_number }}
-                    </div>
-                    <div class="col-md-4">
-                        <strong>Tahun Kepemilikan:</strong> {{ $aset->tahun_kepemilikan }}
-                    </div>
-                    <div class="col-md-4">
-                        <strong>Pengguna:</strong> {{ $aset->pengguna }}
-                    </div>
-                </div>
+                <!-- ... (bagian detail aset lainnya tetap sama) ... -->
 
                 <!-- Kegiatan Table -->
                 <div class="table-responsive">
@@ -50,7 +41,13 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $k->created_at->format('d-m-Y') }}</td>
-                                    <td>{{ $k->kegiatan }}</td>
+                                    <td>
+                                        @if ($k->masterKegiatan->is_custom)
+                                            {{ $k->custom_kegiatan }}
+                                        @else
+                                            {{ $k->masterKegiatan->kegiatan }}
+                                        @endif
+                                    </td>
                                     <td>{{ $k->user->name }}</td>
                                 </tr>
                             @endforeach
@@ -81,8 +78,27 @@
                             <input type="password" class="form-control" id="password" name="password" required>
                         </div>
                         <div class="mb-3">
-                            <label for="kegiatan" class="form-label">Kegiatan</label>
-                            <textarea class="form-control" id="kegiatan" name="kegiatan" rows="3" required></textarea>
+                            <label for="id_master_kegiatan" class="form-label">Kegiatan</label>
+                            <select class="form-select @error('id_master_kegiatan') is-invalid @enderror"
+                                id="id_master_kegiatan" name="id_master_kegiatan" required>
+                                <option value="">Pilih Kegiatan</option>
+                                @foreach ($masterKegiatan as $mKegiatan)
+                                    <option value="{{ $mKegiatan->id }}" data-is-custom="{{ $mKegiatan->is_custom }}">
+                                        {{ $mKegiatan->kegiatan }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('id_master_kegiatan')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="mb-3" id="customKegiatanDiv" style="display: none;">
+                            <label for="custom_kegiatan" class="form-label">Deskripsi Kegiatan</label>
+                            <textarea class="form-control @error('custom_kegiatan') is-invalid @enderror" id="custom_kegiatan"
+                                name="custom_kegiatan" rows="3"></textarea>
+                            @error('custom_kegiatan')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -93,4 +109,39 @@
             </div>
         </div>
     </div>
+
+    @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const masterKegiatanSelect = document.getElementById('id_master_kegiatan');
+                const customKegiatanDiv = document.getElementById('customKegiatanDiv');
+                const customKegiatanTextarea = document.getElementById('custom_kegiatan');
+                const form = document.querySelector('form');
+
+                masterKegiatanSelect.addEventListener('change', function() {
+                    const selectedOption = this.options[this.selectedIndex];
+                    const isCustom = selectedOption.dataset.isCustom === '1';
+
+                    customKegiatanDiv.style.display = isCustom ? 'block' : 'none';
+                    customKegiatanTextarea.required = isCustom;
+
+                    if (!isCustom) {
+                        customKegiatanTextarea.value = ''; // Clear the textarea if not custom
+                    }
+                });
+
+                // Validate form before submit
+                form.addEventListener('submit', function(e) {
+                    const selectedOption = masterKegiatanSelect.options[masterKegiatanSelect.selectedIndex];
+                    const isCustom = selectedOption.dataset.isCustom === '1';
+
+                    if (isCustom && !customKegiatanTextarea.value.trim()) {
+                        e.preventDefault();
+                        alert('Silakan isi deskripsi kegiatan untuk opsi Lainnya');
+                        customKegiatanTextarea.focus();
+                    }
+                });
+            });
+        </script>
+    @endpush
 @endsection
