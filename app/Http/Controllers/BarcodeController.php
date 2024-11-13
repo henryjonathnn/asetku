@@ -12,7 +12,7 @@ class BarcodeController extends Controller
     {
         $aset = Aset::findOrFail($uuid);
 
-        // Sesuaikan ukuran QR code
+        // Sesuaikan ukuran QR code yang lebih besar
         $width = 5;
         $height = 5;
 
