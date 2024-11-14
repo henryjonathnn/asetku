@@ -1,7 +1,7 @@
 <!-- QR Code and Logos Container -->
 <div class="qr-container p-4 bg-light border rounded mb-4">
     <!-- QR Code Display -->
-    <div class="qrcode-wrapper d-flex justify-content-center align-items-center mb-4">
+    <div class="qr-code-wrapper d-flex justify-content-center align-items-center mb-4">
         <div style="width: 200px; height: 200px;">
             {!! $qrcode !!}
         </div>
@@ -14,49 +14,73 @@
     </div>
 
     <!-- Logos Display -->
-    <div class="logos d-flex justify-content-center gap-3 mb-3">
-        <img src="{{ asset('img/logo.png') }}" alt="Logo" height="40">
-        <img src="{{ asset('img/it.png') }}" alt="IT Logo" height="40">
+    <div class="logos d-flex justify-content-center align-items-center gap-3 mb-3">
+        <div class="logo-wrapper d-flex align-items-center" style="height: 70px;">
+            <img src="{{ asset('img/logo.png') }}" alt="Logo" style="max-height: 100%; width: auto;">
+        </div>
+        <div class="logo-wrapper d-flex align-items-center" style="height: 40px;">
+            <img src="{{ asset('img/it.png') }}" alt="IT Logo" style="max-height: 100%; width: auto;">
+        </div>
     </div>
 
     <!-- Print Button -->
-    <button onclick="printQRCode()" class="btn btn-primary w-100">
+    <button id="printQRButton" class="btn btn-primary w-100 no-print">
         <i class="fas fa-print me-2"></i>Print QR Code
     </button>
 </div>
 
 <style>
+    .logo-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .logo-wrapper img {
+        object-fit: contain;
+    }
 
     @media print {
+        @page {
+            size: auto;
+            margin: 0mm;
+        }
+
         body * {
             visibility: hidden;
         }
 
-        .btn-print {
-            display: none;
+        .qr-container,
+        .qr-container * {
+            visibility: visible;
+        }
+
+        .qr-container {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background: white !important;
+            padding: 20px;
+            margin: 0;
+            border: none !important;
+        }
+
+        .no-print {
+            display: none !important;
         }
     }
 </style>
 
 <script>
-    function printQRCode() {
-        const printContent = document.querySelector('.qr-container').innerHTML;
-        const originalContent = document.body.innerHTML;
-
-        document.body.innerHTML = `
-                <div style="display: flex; justify-content: center; align-items: center; min-height: 100vh;">
-                    <div style="background: white; padding: 20px; border-radius: 8px;">
-                        ${printContent}
-                    </div>
-                </div>
-            `;
-
-        window.print();
-        document.body.innerHTML = originalContent;
-        location.reload();
-    }
-
-    // function printQRCode() {
-    //     window.print();
-    // }
+    // Tunggu sampai dokumen sepenuhnya dimuat
+    document.addEventListener('DOMContentLoaded', function() {
+        // Tambahkan event listener ke tombol print
+        const printButton = document.getElementById('printQRButton');
+        if (printButton) {
+            printButton.addEventListener('click', function() {
+                window.print();
+            });
+        }
+    });
 </script>

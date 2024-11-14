@@ -170,8 +170,8 @@
                             <!-- Numbers -->
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    <input type="text" name="serial_number" class="form-control"
-                                        id="createSerialNumber" placeholder="Serial Number">
+                                    <input type="text" name="serial_number" class="form-control" id="createSerialNumber"
+                                        placeholder="Serial Number">
                                     <label for="createSerialNumber">Serial Number</label>
                                 </div>
                             </div>
@@ -304,6 +304,14 @@
                         document.getElementById('barcodeContent').innerHTML = html;
                         const modal = new bootstrap.Modal(document.getElementById('barcodeModal'));
                         modal.show();
+
+                        // Tambahkan event listener setelah konten dimuat
+                        const printButton = document.getElementById('printQRButton');
+                        if (printButton) {
+                            printButton.addEventListener('click', function() {
+                                window.print();
+                            });
+                        }
                     });
             }
         </script>
@@ -389,6 +397,14 @@
                         document.getElementById('barcodeContent').innerHTML = html;
                         const modal = new bootstrap.Modal(document.getElementById('barcodeModal'));
                         modal.show();
+
+                        // Tambahkan event listener setelah konten dimuat
+                        const printButton = document.getElementById('printQRButton');
+                        if (printButton) {
+                            printButton.addEventListener('click', function() {
+                                window.print();
+                            });
+                        }
                     });
             }
         </script>
