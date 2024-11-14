@@ -28,6 +28,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('aset/{uuid}/barcode', [BarcodeController::class, 'generate'])->name('barcode.generate');
+Route::get('aset/{uuid}/download-qr', [BarcodeController::class, 'generateAndDownloadQRCode'])->name('barcode.download');
 
 // Route::resource('kegiatan', KegiatanController::class);
 Route::get('aset/{uuid}/kegiatan', [KegiatanController::class, 'index'])->name('kegiatan.index');
