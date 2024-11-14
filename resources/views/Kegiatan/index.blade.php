@@ -110,7 +110,7 @@
                                 <th class="border-0 ps-4">No</th>
                                 <th class="border-0">Tanggal</th>
                                 <th class="border-0">Kegiatan</th>
-                                <th class="border-0">Petugas</th>
+                                <th class="border-0">PIC</th>
                                 <th class="border-0">Status</th>
                             </tr>
                         </thead>
@@ -234,6 +234,7 @@
         </div>
     </div>
 
+
     <!-- Edit Asset Modal -->
     <div class="modal fade" id="editAssetModal" tabindex="-1">
         <div class="modal-dialog">
@@ -242,108 +243,12 @@
                     <h5 class="modal-title">Edit Data Aset</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body">
-                    <form id="editAssetForm">
-                        <div class="row g-4">
-                            <!-- Basic Information -->
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="text" name="nama_barang" class="form-control" id="nama_barang"
-                                        value="{{ $aset->nama_barang }}" placeholder="Nama Barang">
-                                    <label for="nama_barang">Nama Barang</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="text" name="jenis" class="form-control" id="jenis"
-                                        value="{{ $aset->jenis }}" placeholder="Jenis">
-                                    <label for="jenis">Jenis</label>
-                                </div>
-                            </div>
-
-                            <!-- Numbers Section -->
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="text" name="serial_number" class="form-control" id="serial_number"
-                                        value="{{ $aset->serial_number }}" placeholder="Serial Number">
-                                    <label for="serial_number">Serial Number</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="text" name="part_number" class="form-control" id="part_number"
-                                        value="{{ $aset->part_number }}" placeholder="Part Number">
-                                    <label for="part_number">Part Number</label>
-                                </div>
-                            </div>
-
-                            <!-- User Information -->
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="text" name="pengguna" class="form-control" id="pengguna"
-                                        value="{{ $aset->pengguna }}" placeholder="Pengguna">
-                                    <label for="pengguna">Pengguna</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="number" name="tahun_kepemilikan" class="form-control"
-                                        id="tahun_kepemilikan" value="{{ $aset->tahun_kepemilikan }}"
-                                        placeholder="Tahun Kepemilikan">
-                                    <label for="tahun_kepemilikan">Tahun Kepemilikan</label>
-                                </div>
-                            </div>
-
-                            <!-- Ownership -->
-                            <div class="col-md-12">
-                                <div class="form-floating">
-                                    <select name="id_kepemilikan" class="form-select" id="id_kepemilikan">
-                                        @foreach ($kepemilikan as $kepemilikan)
-                                            <option value="{{ $kepemilikan->id }}"
-                                                {{ $aset->id_kepemilikan == $kepemilikan->id ? 'selected' : '' }}>
-                                                {{ $kepemilikan->kepemilikan }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    <label for="id_kepemilikan">Kepemilikan</label>
-                                </div>
-                            </div>
-
-                            <!-- Specifications -->
-                            <div class="col-12">
-                                <div class="form-floating">
-                                    <textarea name="spek" class="form-control" id="spek" style="height: 100px" placeholder="Spesifikasi">{{ $aset->spek }}</textarea>
-                                    <label for="spek">Spesifikasi</label>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer border-0 pt-0">
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">
-                        <i class="fas fa-times me-1"></i>Batal
-                    </button>
-                    <button type="button" class="btn btn-primary" id="continueToCredentials">
-                        <i class="fas fa-arrow-right me-1"></i>Lanjutkan
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Credentials Modal -->
-    <div class="modal fade" id="credentialsModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header border-0 pb-0">
-                    <h5 class="modal-title">Verifikasi Kredensial</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <form id="credentialsForm" action="{{ route('aset.update', $aset->id) }}" method="POST">
+                <form action="{{ route('kegiatan.update-master', $aset->id) }}" method="POST">
                     @csrf
                     @method('PUT')
                     <div class="modal-body">
                         <div class="row g-3">
+                            <!-- Credentials Section -->
                             <div class="col-12">
                                 <div class="form-floating">
                                     <input type="text" class="form-control" id="username" name="username" required
@@ -358,11 +263,72 @@
                                     <label for="password">Password</label>
                                 </div>
                             </div>
+
+                            <!-- Asset Data Section -->
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" name="nama_barang" class="form-control" id="nama_barang"
+                                        value="{{ $aset->nama_barang }}" placeholder="Nama Barang" required>
+                                    <label for="nama_barang">Nama Barang</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" name="jenis" class="form-control" id="jenis"
+                                        value="{{ $aset->jenis }}" placeholder="Jenis" required>
+                                    <label for="jenis">Jenis</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" name="serial_number" class="form-control" id="serial_number"
+                                        value="{{ $aset->serial_number }}" placeholder="Serial Number" required>
+                                    <label for="serial_number">Serial Number</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" name="part_number" class="form-control" id="part_number"
+                                        value="{{ $aset->part_number }}" placeholder="Part Number" required>
+                                    <label for="part_number">Part Number</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" name="pengguna" class="form-control" id="pengguna"
+                                        value="{{ $aset->pengguna }}" placeholder="Pengguna" required>
+                                    <label for="pengguna">Pengguna</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="number" name="tahun_kepemilikan" class="form-control"
+                                        id="tahun_kepemilikan" value="{{ $aset->tahun_kepemilikan }}"
+                                        placeholder="Tahun Kepemilikan" required>
+                                    <label for="tahun_kepemilikan">Tahun Kepemilikan</label>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-floating">
+                                    <select name="id_kepemilikan" class="form-select" id="id_kepemilikan" required>
+                                        @foreach ($kepemilikan as $k)
+                                            <option value="{{ $k->id }}"
+                                                {{ $aset->id_kepemilikan == $k->id ? 'selected' : '' }}>
+                                                {{ $k->kepemilikan }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <label for="id_kepemilikan">Kepemilikan</label>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-floating">
+                                    <textarea name="spek" class="form-control" id="spek" style="height: 100px" placeholder="Spesifikasi"
+                                        required>{{ $aset->spek }}</textarea>
+                                    <label for="spek">Spesifikasi</label>
+                                </div>
+                            </div>
                         </div>
-                        <!-- Hidden inputs for asset data -->
-                        <input type="hidden" name="jenis" id="hidden_jenis">
-                        <input type="hidden" name="nama_barang" id="hidden_nama_barang">
-                        <!-- Add other hidden fields as needed -->
                     </div>
                     <div class="modal-footer border-0 pt-0">
                         <button type="button" class="btn btn-light" data-bs-dismiss="modal">
@@ -377,6 +343,8 @@
         </div>
     </div>
 
+
+
     @push('scripts')
         <script>
             document.addEventListener('DOMContentLoaded', function() {
@@ -384,7 +352,6 @@
                 const customKegiatanDiv = document.getElementById('customKegiatanDiv');
                 const customKegiatanTextarea = document.getElementById('custom_kegiatan');
                 const editAssetModal = new bootstrap.Modal(document.getElementById('editAssetModal'));
-                const credentialsModal = new bootstrap.Modal(document.getElementById('credentialsModal'));
                 const form = document.querySelector('form');
 
                 masterKegiatanSelect.addEventListener('change', function() {
@@ -410,21 +377,7 @@
                     }
                 });
 
-                // Handle continue button click
-                document.getElementById('continueToCredentials').addEventListener('click', function() {
-                    // Transfer form data to hidden inputs
-                    document.getElementById('hidden_jenis').value = document.getElementById('edit_jenis').value;
-                    document.getElementById('hidden_nama_barang').value = document.getElementById(
-                        'edit_nama_barang').value;
-                    // Transfer other fields as needed
-
-                    // Close edit modal and show credentials modal
-                    editAssetModal.hide();
-                    credentialsModal.show();
-                });
-
-                // Handle form submission
-                document.getElementById('credentialsForm').addEventListener('submit', async function(e) {
+                editAssetForm.addEventListener('submit', async function(e) {
                     e.preventDefault();
 
                     try {
@@ -439,7 +392,6 @@
                         const data = await response.json();
 
                         if (response.ok) {
-                            credentialsModal.hide();
                             window.location.reload(); // Refresh page to show updated data
                         } else {
                             alert(data.message || 'Terjadi kesalahan saat memperbarui data.');

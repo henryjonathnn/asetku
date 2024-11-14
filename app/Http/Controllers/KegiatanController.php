@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Aset;
 use App\Models\Kegiatan;
+use App\Models\Kepemilikan;
 use App\Models\MasterKegiatan;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
@@ -21,8 +23,9 @@ class KegiatanController extends Controller
         $kegiatan = Kegiatan::with(['masterKegiatan', 'user'])
             ->where('id_aset', $aset->id)->latest('created_at')->paginate(10);
         $masterKegiatan = MasterKegiatan::all();
+        $kepemilikan = Kepemilikan::all();
 
-        return view('kegiatan.index', compact('aset', 'kegiatan', 'masterKegiatan'));
+        return view('kegiatan.index', compact('aset', 'kegiatan', 'masterKegiatan', 'kepemilikan'));
     }
 
 
@@ -58,6 +61,47 @@ class KegiatanController extends Controller
 
         return redirect()->route('kegiatan.index', ['uuid' => $aset->id])
             ->with('success', 'Kegiatan berhasil ditambahkan');
+    }
+
+    public function updateMaster(Request $request, $uuid)
+    {
+        // Validate request
+        $validatedData = $request->validate([
+            'username' => 'required|string',
+            'password' => 'required|string',
+            'jenis' => 'required',
+            'nama_barang' => 'required',
+            'serial_number' => 'required',
+            'part_number' => 'required',
+            'pengguna' => 'required',
+            'tahun_kepemilikan' => 'required|numeric',
+            'id_kepemilikan' => 'required',
+            'spek' => 'required',
+        ]);
+
+        // Verify credentials
+        $user = User::where('username', $request->username)->first();
+
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return redirect()->back()
+            ->withInput()
+            ->with('error', 'Username atau password tidak valid!');    
+        }
+
+        try {
+            // Remove credentials from validatedData before updating
+            unset($validatedData['username']);
+            unset($validatedData['password']);
+
+            // Update the asset
+            $aset = Aset::findOrFail($uuid);
+            $aset->update($validatedData);
+
+            return redirect()->route('kegiatan.index', ['uuid' => $aset->id])
+                ->with('success', 'Data aset berhasil diperbarui');
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan saat memperbarui data aset');
+        }
     }
 
 

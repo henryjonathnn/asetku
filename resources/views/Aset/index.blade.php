@@ -33,7 +33,6 @@
                     <div class="col-md-3">
                         <select class="form-select" id="jenisFilter">
                             <option value="">Semua Jenis</option>
-                            <!-- Add your jenis options here -->
                         </select>
                     </div>
                     <!-- Filter Kepemilikan -->
@@ -45,14 +44,14 @@
                             @endforeach
                         </select>
                     </div>
-                    <!-- Export Button -->
+                    {{-- <!-- Export Button -->
                     <div class="col-md-2">
                         <button type="button"
                             class="btn btn-outline-primary w-100 d-flex align-items-center justify-content-center gap-2">
                             <i class="fas fa-download"></i>
                             <span>Export</span>
                         </button>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>
