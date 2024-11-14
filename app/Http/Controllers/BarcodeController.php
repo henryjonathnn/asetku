@@ -13,8 +13,8 @@ class BarcodeController extends Controller
         $aset = Aset::findOrFail($uuid);
 
         // Sesuaikan ukuran QR code yang lebih besar
-        $width = 5;
-        $height = 5;
+        $width = 4;
+        $height = 4;
 
         $url = URL::signedRoute('kegiatan.index', ['uuid' => $aset->id]);
         $qrcode = DNS2DFacade::getBarcodeSVG($url, 'QRCODE', $width, $height);

@@ -15,7 +15,7 @@
             </button>
         </div>
 
-        <!-- Search and Filter Card -->
+        {{-- <!-- Search and Filter Card -->
         <div class="card shadow-sm mb-4">
             <div class="card-body">
                 <div class="row g-3">
@@ -44,17 +44,17 @@
                             @endforeach
                         </select>
                     </div>
-                    {{-- <!-- Export Button -->
+                    <!-- Export Button -->
                     <div class="col-md-2">
                         <button type="button"
                             class="btn btn-outline-primary w-100 d-flex align-items-center justify-content-center gap-2">
                             <i class="fas fa-download"></i>
                             <span>Export</span>
                         </button>
-                    </div> --}}
+                    </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <!-- Assets List Card -->
         <div class="card shadow-sm">
@@ -264,118 +264,133 @@
 
     <!-- Barcode Modal -->
     <div class="modal fade" id="barcodeModal" tabindex="-1">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-sm">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Barcode Aset</h5>
+                    <h5 class="modal-title">QR Code Aset</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body text-center" id="barcodeContent">
-                    <!-- Content will be loaded here -->
+                    <!-- QR Code akan dimuat di sini -->
                 </div>
             </div>
         </div>
     </div>
 
-@push('scripts')
-    <script>
-        function loadAsetDetail(id) {
-            fetch(`/aset/${id}/detail`)
-                .then(response => response.text())
-                .then(html => {
-                    document.getElementById('detailAsetContent').innerHTML = html;
-                });
-        }
+    @push('scripts')
+        <script>
+            function loadAsetDetail(id) {
+                fetch(`/aset/${id}/detail`)
+                    .then(response => response.text())
+                    .then(html => {
+                        document.getElementById('detailAsetContent').innerHTML = html;
+                    });
+            }
 
-        function loadAsetEdit(id) {
-            fetch(`/aset/${id}/edit`)
-                .then(response => response.text())
-                .then(html => {
-                    document.getElementById('editAsetContent').innerHTML = html;
-                });
-        }
+            function loadAsetEdit(id) {
+                fetch(`/aset/${id}/edit`)
+                    .then(response => response.text())
+                    .then(html => {
+                        document.getElementById('editAsetContent').innerHTML = html;
+                    });
+            }
 
-        function loadBarcode(id) {
-            window.open(`/aset/${id}/barcode`, '_blank', 'width=400,height=400');
-        }
-    </script>
-@endpush
+            // Replace the existing loadBarcode function
+            // Di bagian scripts pada index.blade.php
+            function loadBarcode(id) {
+                fetch(`/aset/${id}/barcode`)
+                    .then(response => response.text())
+                    .then(html => {
+                        document.getElementById('barcodeContent').innerHTML = html;
+                        const modal = new bootstrap.Modal(document.getElementById('barcodeModal'));
+                        modal.show();
+                    });
+            }
+        </script>
+    @endpush
 
-@push('styles')
-    <style>
-        /* Custom Styles */
-        .table> :not(caption)>*>* {
-            padding: 1rem 0.75rem;
-        }
+    @push('styles')
+        <style>
+            /* Custom Styles */
+            .table> :not(caption)>*>* {
+                padding: 1rem 0.75rem;
+            }
 
-        .badge {
-            font-weight: 500;
-            letter-spacing: 0.3px;
-            padding: 0.35em 0.65em;
-        }
+            .badge {
+                font-weight: 500;
+                letter-spacing: 0.3px;
+                padding: 0.35em 0.65em;
+            }
 
-        .pagination {
-            margin-bottom: 0;
-        }
+            .pagination {
+                margin-bottom: 0;
+            }
 
-        .form-check-input:checked {
-            background-color: #0d6efd;
-            border-color: #0d6efd;
-        }
-    </style>
-@endpush
+            .form-check-input:checked {
+                background-color: #0d6efd;
+                border-color: #0d6efd;
+            }
+        </style>
+    @endpush
 
-@push('scripts')
-    <script>
-        // Handle search functionality
-        document.getElementById('searchInput').addEventListener('keyup', function(e) {
-            // Implement search logic
-        });
-
-        // Handle filters
-        document.getElementById('jenisFilter').addEventListener('change', function(e) {
-            // Implement filter logic
-        });
-
-        document.getElementById('kepemilikanFilter').addEventListener('change', function(e) {
-            // Implement filter logic
-        });
-
-        // Confirm delete
-        function confirmDelete(id) {
-            Swal.fire({
-                title: 'Hapus Aset?',
-                text: "Data yang dihapus tidak dapat dikembalikan!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#dc3545',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Ya, Hapus!',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Implement delete logic
-                    window.location.href = `/aset/${id}/delete`;
-                }
+    @push('scripts')
+        <script>
+            // Handle search functionality
+            document.getElementById('searchInput').addEventListener('keyup', function(e) {
+                // Implement search logic
             });
-        }
 
-        // Load modals content
-        async function loadAsetDetail(id) {
-            const response = await fetch(`/aset/${id}/detail`);
-            const html = await response.text();
-            document.getElementById('detailAsetContent').innerHTML = html;
-        }
+            // Handle filters
+            document.getElementById('jenisFilter').addEventListener('change', function(e) {
+                // Implement filter logic
+            });
 
-        async function loadAsetEdit(id) {
-            const response = await fetch(`/aset/${id}/edit`);
-            const html = await response.text();
-            document.getElementById('editAsetContent').innerHTML = html;
-        }
+            document.getElementById('kepemilikanFilter').addEventListener('change', function(e) {
+                // Implement filter logic
+            });
 
-        function loadBarcode(id) {
-            window.open(`/aset/${id}/barcode`, '_blank', 'width=400,height=400');
-        }
-    </script>
-@endpush
+            // Confirm delete
+            function confirmDelete(id) {
+                Swal.fire({
+                    title: 'Hapus Aset?',
+                    text: "Data yang dihapus tidak dapat dikembalikan!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc3545',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Implement delete logic
+                        window.location.href = `/aset/${id}/delete`;
+                    }
+                });
+            }
+
+            // Load modals content
+            async function loadAsetDetail(id) {
+                const response = await fetch(`/aset/${id}/detail`);
+                const html = await response.text();
+                document.getElementById('detailAsetContent').innerHTML = html;
+            }
+
+            async function loadAsetEdit(id) {
+                const response = await fetch(`/aset/${id}/edit`);
+                const html = await response.text();
+                document.getElementById('editAsetContent').innerHTML = html;
+            }
+
+            // Di bagian scripts pada index.blade.php
+            function loadBarcode(id) {
+                fetch(`/aset/${id}/barcode`)
+                    .then(response => response.text())
+                    .then(html => {
+                        document.getElementById('barcodeContent').innerHTML = html;
+                        const modal = new bootstrap.Modal(document.getElementById('barcodeModal'));
+                        modal.show();
+                    });
+            }
+        </script>
+    @endpush
 @endsection
