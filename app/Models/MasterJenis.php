@@ -5,15 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class MasterKegiatan extends Model
+class MasterJenis extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['kegiatan', 'is_custom', 'is_active'];
+    protected $fillable = ['jenis', 'is_active'];
 
-    public function kegiatans()
+    public function aset()
     {
-        return $this->hasMany(Kegiatan::class, 'id_master_kegiatan');
+        return $this->hasMany(Aset::class, 'id_master_jenis');
     }
 
     public function scopeActive($query)

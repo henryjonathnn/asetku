@@ -11,10 +11,15 @@ class Kepemilikan extends Model
 
     protected $table = 'kepemilikans';
 
-    protected $fillable = ['kepemilikan',];
+    protected $fillable = ['kepemilikan', 'is_active'];
 
     public function aset()
     {
         return $this->hasMany(Aset::class, 'id_kepemilikan');
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
     }
 }

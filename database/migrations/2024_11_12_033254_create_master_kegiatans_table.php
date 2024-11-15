@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('kegiatan');
             $table->boolean('is_custom')->default(false);
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }
