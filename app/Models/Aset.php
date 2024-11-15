@@ -12,11 +12,13 @@ class Aset extends Model
 
     protected $fillable = [
         'nama_barang',
-        'jenis',
+        'id_master_jenis',
+        'nomor_aset',
         'serial_number',
         'part_number',
         'spek',
         'pengguna',
+        'foto',
         'tahun_kepemilikan',
         'id_kepemilikan',
     ];

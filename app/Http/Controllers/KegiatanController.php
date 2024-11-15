@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Aset;
 use App\Models\Kegiatan;
 use App\Models\Kepemilikan;
+use App\Models\MasterJenis;
 use App\Models\MasterKegiatan;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -24,8 +25,9 @@ class KegiatanController extends Controller
             ->where('id_aset', $aset->id)->latest('created_at')->paginate(10);
         $masterKegiatan = MasterKegiatan::all();
         $kepemilikan = Kepemilikan::all();
+        $masterJenis = MasterJenis::all();
 
-        return view('kegiatan.index', compact('aset', 'kegiatan', 'masterKegiatan', 'kepemilikan'));
+        return view('kegiatan.index', compact('aset', 'kegiatan', 'masterKegiatan', 'kepemilikan', 'masterJenis'));
     }
 
 
@@ -37,6 +39,7 @@ class KegiatanController extends Controller
             'username' => 'required|string',
             'password' => 'required|string',
             'id_master_kegiatan' => 'required|exists:master_kegiatans,id',
+            'id_master_jenis' => 'required|exists:master_jenis,id',
             'custom_kegiatan' => 'nullable|string|required_if:is_custom,1',
         ]);
 
@@ -50,12 +53,14 @@ class KegiatanController extends Controller
 
         // Get the selected MasterKegiatan
         $masterKegiatan = MasterKegiatan::findOrFail($request->id_master_kegiatan);
+        $masterJenis = MasterJenis::findOrFail($request->id_master_jenis);
 
         // Create kegiatan with proper handling of custom_kegiatan
         Kegiatan::create([
             'id_aset' => $aset->id,
             'id_user' => $user->id,
             'id_master_kegiatan' => $masterKegiatan->id,
+            'id_master_jenis' => $masterJenis->id,
             'custom_kegiatan' => $masterKegiatan->is_custom ? $request->custom_kegiatan : null,
         ]);
 
@@ -69,12 +74,14 @@ class KegiatanController extends Controller
         $validatedData = $request->validate([
             'username' => 'required|string',
             'password' => 'required|string',
-            'jenis' => 'required',
+            'id_master_jenis' => 'required',
             'nama_barang' => 'required',
+            'nomor_aset' => 'required',
             'serial_number' => 'required',
             'part_number' => 'required',
             'pengguna' => 'required',
             'tahun_kepemilikan' => 'required|numeric',
+            'foto' => 'required|image|mimes:jpg,jpeg,png,gif|max:2048',
             'id_kepemilikan' => 'required',
             'spek' => 'required',
         ]);

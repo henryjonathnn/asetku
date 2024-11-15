@@ -24,20 +24,22 @@ class AsetController extends Controller
         $aset = Aset::select([
             'id',
             'nama_barang',
-            'jenis',
+            'id_master_jenis',
+            'nomor_aset',
             'serial_number',
             'part_number',
             'spek',
             'pengguna',
             'tahun_kepemilikan',
+            'foto',
             'id_kepemilikan',
             'created_at',
         ])
             ->with(['kegiatan' => function ($query) {
-                $query->select('id', 'id_aset', 'id_master_kegiatan', 'id_user', 'created_at')
+                $query->select('id', 'id_aset', 'id_master_kegiatan', 'id_master_jenis', 'id_user', 'created_at')
                     ->with([
                         'masterKegiatan:id,kegiatan',
-                        'user:id,name'
+                        'user:id,name', 'masterJenis'
                     ])
                     ->latest()
                     ->take(10);
@@ -57,11 +59,13 @@ class AsetController extends Controller
     {
         $validated = $request->validate([
             'nama_barang' => 'nullable|string|max:255',
-            'jenis' => 'nullable|string|max:255',
+            'id_master_jenis' => 'nullable',
+            'nomor_aset' => 'nullable|string|max:255',
             'serial_number' => 'nullable|string|max:255',
             'part_number' => 'nullable|string|max:255',
             'spek' => 'nullable|string',
             'pengguna' => 'nullable|string|max:255',
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
             'tahun_kepemilikan' => 'nullable|integer|digits:4',
             'id_kepemilikan' => 'nullable',
         ]);
@@ -87,11 +91,13 @@ class AsetController extends Controller
         $aset = Aset::select([
             'id',
             'nama_barang',
-            'jenis',
+            'id_master_jenis',
+            'nomor_aset',
             'serial_number',
             'part_number',
             'spek',
             'pengguna',
+            'foto',
             'tahun_kepemilikan',
             'id_kepemilikan'
         ])->findOrFail($uuid);
@@ -111,11 +117,13 @@ class AsetController extends Controller
     {
         $validated = $request->validate([
             'nama_barang' => 'required|string|max:255',
-            'jenis' => 'required|string|max:255',
+            'id_master_jenis' => 'required|exists:master_jenis,id',
+            'nomor_aset' => 'nullable|string|max:255',
             'serial_number' => 'nullable|string|max:255',
             'part_number' => 'nullable|string|max:255',
             'spek' => 'nullable|string',
             'pengguna' => 'required|string|max:255',
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
             'tahun_kepemilikan' => 'nullable|integer|digits:4',
             'id_kepemilikan' => 'required|exists:kepemilikans,id',
         ]);
