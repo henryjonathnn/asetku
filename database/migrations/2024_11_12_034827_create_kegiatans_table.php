@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('id_user')->constrained('users');
             $table->foreignId('id_master_kegiatan')->constrained('master_kegiatans');
             $table->string('custom_kegiatan')->nullable(); // Untuk input bebas ketika memilih "Lainnya"
+            $table->string('foto')->nullable();
             $table->timestamps();
 
             $table->index('created_at');

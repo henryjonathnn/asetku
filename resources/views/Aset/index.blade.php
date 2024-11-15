@@ -74,7 +74,7 @@
                                     </div>
                                 </th>
                                 <th class="border-0 ps-4">No</th>
-                                <th class="border-0">ID Aset</th>
+                                <th class="border-0">Nomor Aset</th>
                                 <th class="border-0">Jenis</th>
                                 <th class="border-0">Nama Barang</th>
                                 <th class="border-0">Pengguna</th>
@@ -91,13 +91,13 @@
                                         </div>
                                     </td>
                                     <td class="ps-4">
-                                        <span class="fw-medium">{{ $loop->iteration }}</span>
+                                        <span class="fw-medium">{{ $loop->iteration ?? '-' }}</span>
                                     </td>
                                     <td>
-                                        <span class="fw-medium">{{ $item->id }}</span>
+                                        <span class="fw-medium">{{ $item->nomor_aset ?? '-' }}</span>
                                     </td>
                                     <td>
-                                        <span class="badge bg-light text-dark">{{ $item->jenis }}</span>
+                                        <span class="badge bg-light text-dark">{{ $item->jenis->jenis ?? '-' }}</span>
                                     </td>
                                     <td>
                                         <div class="d-flex align-items-center gap-2">
@@ -105,8 +105,8 @@
                                                 <i class="fas fa-box text-primary"></i>
                                             </div>
                                             <div>
-                                                <span class="d-block fw-medium">{{ $item->nama_barang }}</span>
-                                                <small class="text-muted">SN: {{ $item->serial_number }}</small>
+                                                <span class="d-block fw-medium">{{ $item->nama_barang}}</span>
+                                                <small class="text-muted">SN: {{ $item->serial_number}}</small>
                                             </div>
                                         </div>
                                     </td>
@@ -115,7 +115,7 @@
                                             <div class="bg-light rounded-circle p-1">
                                                 <i class="fas fa-user text-primary"></i>
                                             </div>
-                                            <span>{{ $item->pengguna }}</span>
+                                            <span>{{ $item->pengguna ?? '-'}}</span>
                                         </div>
                                     </td>
                                     <td>
@@ -163,87 +163,130 @@
                     <h5 class="modal-title">Tambah Aset Baru</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form action="{{ route('aset.store') }}" method="POST">
+                <form action="{{ route('aset.store') }}" method="POST" class="p-4">
                     @csrf
                     <div class="modal-body">
                         <div class="row g-4">
                             <!-- Basic Information -->
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="text" name="nama_barang" class="form-control" id="createNamaBarang"
-                                        placeholder="Nama Barang">
-                                    <label for="createNamaBarang">Nama Barang</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="text" name="jenis" class="form-control" id="createJenis"
-                                        placeholder="Jenis">
-                                    <label for="createJenis">Jenis</label>
-                                </div>
-                            </div>
-
-                            <!-- Numbers -->
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="text" name="serial_number" class="form-control"
-                                        id="createSerialNumber" placeholder="Serial Number">
-                                    <label for="createSerialNumber">Serial Number</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="text" name="part_number" class="form-control" id="createPartNumber"
-                                        placeholder="Part Number">
-                                    <label for="createPartNumber">Part Number</label>
-                                </div>
-                            </div>
-
-                            <!-- Specifications -->
                             <div class="col-12">
-                                <div class="form-floating">
-                                    <textarea name="spek" class="form-control" id="createSpek" style="height: 100px" placeholder="Spesifikasi"></textarea>
-                                    <label for="createSpek">Spesifikasi</label>
+                                <h6 class="text-primary mb-3">Informasi Dasar</h6>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input type="text" name="nama_barang" class="form-control"
+                                                id="createNamaBarang" placeholder="Nama Barang">
+                                            <label for="createNamaBarang">Nama Barang</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <select name="id_master_jenis" class="form-select" id="createJenis">
+                                                <option value="">Pilih Jenis</option>
+                                                @foreach ($jenis as $j)
+                                                    <option value="{{ $j->id }}">
+                                                        {{ $j->jenis }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            <label for="createJenis">Jenis</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Numbers Section -->
+                            <div class="col-12">
+                                <h6 class="text-primary mb-3">Nomor Identifikasi</h6>
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <div class="form-floating">
+                                            <input type="text" name="nomor_aset" class="form-control"
+                                                id="createNomorAset" placeholder="Nomor Aset">
+                                            <label for="createNomorAset">Nomor Aset</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-floating">
+                                            <input type="text" name="serial_number" class="form-control"
+                                                id="createSerialNumber" placeholder="Serial Number">
+                                            <label for="createSerialNumber">Serial Number</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-floating">
+                                            <input type="text" name="part_number" class="form-control"
+                                                id="createPartNumber" placeholder="Part Number">
+                                            <label for="createPartNumber">Part Number</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Specifications & Status -->
+                            <div class="col-12">
+                                <h6 class="text-primary mb-3">Spesifikasi & Status</h6>
+                                <div class="row g-3">
+                                    <div class="col-md-8">
+                                        <div class="form-floating">
+                                            <textarea name="spek" class="form-control" id="createSpek" style="height: 100px" placeholder="Spesifikasi"></textarea>
+                                            <label for="createSpek">Spesifikasi</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-floating">
+                                            <select name="status" class="form-select" id="createStatus">
+                                                <option value="">Pilih Status</option>
+                                                <option value="baik">Baik</option>
+                                                <option value="kurang_layak">Kurang Layak</option>
+                                                <option value="rusak">Rusak</option>
+                                            </select>
+                                            <label for="createStatus">Status</label>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
                             <!-- Additional Info -->
-                            <div class="col-md-4">
-                                <div class="form-floating">
-                                    <input type="number" name="tahun_kepemilikan" class="form-control" id="createTahun"
-                                        placeholder="Tahun">
-                                    <label for="createTahun">Tahun Kepemilikan</label>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-floating">
-                                    <input type="text" name="pengguna" class="form-control" id="createPengguna"
-                                        placeholder="Pengguna">
-                                    <label for="createPengguna">Pengguna</label>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-floating">
-                                    <select name="id_kepemilikan" class="form-select" id="createKepemilikan">
-                                        <option value="">Pilih Kepemilikan</option>
-                                        @foreach ($kepemilikan as $k)
-                                            <option value="{{ $k->id }}">{{ $k->kepemilikan }}</option>
-                                        @endforeach
-                                    </select>
-                                    <label for="createKepemilikan">Kepemilikan</label>
+                            <div class="col-12">
+                                <h6 class="text-primary mb-3">Informasi Tambahan</h6>
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <div class="form-floating">
+                                            <input type="number" name="tahun_kepemilikan" class="form-control"
+                                                id="createTahun" placeholder="Tahun">
+                                            <label for="createTahun">Tahun Kepemilikan</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-floating">
+                                            <input type="text" name="pengguna" class="form-control"
+                                                id="createPengguna" placeholder="Pengguna">
+                                            <label for="createPengguna">Pengguna</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-floating">
+                                            <select name="id_kepemilikan" class="form-select" id="createKepemilikan">
+                                                <option value="">Pilih Kepemilikan</option>
+                                                @foreach ($kepemilikan as $k)
+                                                    <option value="{{ $k->id }}">
+                                                        {{ $k->kepemilikan }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            <label for="createKepemilikan">Kepemilikan</label>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer border-0 pt-0">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">
-                            <i class="fas fa-times me-1"></i>Batal
-                        </button>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save me-1"></i>Simpan
-                        </button>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">Buat</button>
                     </div>
                 </form>
+
             </div>
         </div>
     </div>
@@ -258,6 +301,20 @@
                 </div>
                 <div class="modal-body" id="detailAsetContent">
                     <!-- Content will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Photo View Modal -->
+    <div class="modal fade" id="photoViewModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center p-0">
+                    <img src="" id="modalPhotoPreview" alt="Foto Kegiatan" class="img-fluid">
                 </div>
             </div>
         </div>
@@ -295,108 +352,235 @@
 
     @push('scripts')
         <script>
+            // Main initialization
+            // Main initialization
             document.addEventListener('DOMContentLoaded', function() {
-                const selectAllCheckbox = document.getElementById('selectAll');
-                const asetCheckboxes = document.querySelectorAll('.aset-checkbox');
-                const printSelectedButton = document.getElementById('printSelected');
+                // Cache DOM elements
+                const elements = {
+                    selectAll: document.getElementById('selectAll'),
+                    asetCheckboxes: document.querySelectorAll('.aset-checkbox'),
+                    printSelected: document.getElementById('printSelected'),
+                    photoViewModal: document.getElementById('photoViewModal'),
+                    modalPhotoPreview: document.getElementById('modalPhotoPreview'),
+                    detailAsetModal: document.getElementById('detailAsetModal'),
+                    photoPreview: document.getElementById('photoPreview'),
+                    createModal: document.getElementById('createKegiatanModal'),
+                    imagePreview: document.querySelector('#imagePreview'),
+                    fileInput: document.querySelector('#foto')
+                };
 
-                // Handle Select All checkbox
-                selectAllCheckbox.addEventListener('change', function() {
+                // Initialize event listeners
+                initializePhotoHandlers();
+                initializeCheckboxHandlers();
+                initializeModalHandlers();
+            });
+
+            // Photo handling functions
+            function initializePhotoHandlers() {
+                // Global click handler for photo viewing
+                document.addEventListener('click', function(e) {
+                    const photoButton = e.target.closest('.view-photo');
+                    if (!photoButton) return;
+
+                    e.preventDefault();
+                    showPhotoModal(photoButton.dataset.photo);
+                });
+
+                // Photo modal events
+                const photoViewModal = document.getElementById('photoViewModal');
+                photoViewModal.addEventListener('hidden.bs.modal', function() {
+                    document.getElementById('modalPhotoPreview').src = '';
+                });
+
+                // Nested modal handling
+                photoViewModal.addEventListener('show.bs.modal', function() {
+                    document.getElementById('detailAsetModal').style.opacity = 1;
+                });
+
+                photoViewModal.addEventListener('hidden.bs.modal', function() {
+                    document.getElementById('detailAsetModal').style.opacity = 1;
+                    document.getElementById('photoPreview').src = '';
+                });
+            }
+
+            // Checkbox handling functions
+            function initializeCheckboxHandlers() {
+                const selectAll = document.getElementById('selectAll');
+                const asetCheckboxes = document.querySelectorAll('.aset-checkbox');
+                const printSelected = document.getElementById('printSelected');
+
+                // Select All checkbox handler
+                selectAll.addEventListener('change', function() {
                     asetCheckboxes.forEach(checkbox => {
                         checkbox.checked = this.checked;
                     });
                     updatePrintButtonState();
                 });
 
-                // Handle individual checkboxes
+                // Individual checkboxes handler
                 asetCheckboxes.forEach(checkbox => {
                     checkbox.addEventListener('change', function() {
                         const allChecked = Array.from(asetCheckboxes).every(cb => cb.checked);
                         const anyChecked = Array.from(asetCheckboxes).some(cb => cb.checked);
-                        selectAllCheckbox.checked = allChecked;
+                        selectAll.checked = allChecked;
                         updatePrintButtonState();
                     });
                 });
 
-                // Update print button state
-                function updatePrintButtonState() {
-                    const checkedBoxes = Array.from(asetCheckboxes).filter(cb => cb.checked);
-                    printSelectedButton.disabled = checkedBoxes.length === 0;
+                // Print button handler
+                if (printSelected) {
+                    printSelected.addEventListener('click', handlePrintSelected);
+                }
+            }
+
+            // Modal handling functions
+            function initializeModalHandlers() {
+                const createModal = document.getElementById('createKegiatanModal');
+                if (createModal) {
+                    createModal.addEventListener('hidden.bs.modal', resetModalForm);
+                }
+            }
+
+            // Utility functions
+            function showPhotoModal(photoUrl) {
+                const modalImg = document.getElementById('modalPhotoPreview');
+                modalImg.src = photoUrl;
+                const photoModal = new bootstrap.Modal(document.getElementById('photoViewModal'));
+                photoModal.show();
+            }
+
+            function updatePrintButtonState() {
+                const asetCheckboxes = document.querySelectorAll('.aset-checkbox');
+                const printSelected = document.getElementById('printSelected');
+                const checkedBoxes = Array.from(asetCheckboxes).filter(cb => cb.checked);
+                if (printSelected) {
+                    printSelected.disabled = checkedBoxes.length === 0;
+                }
+            }
+
+            function handlePrintSelected(e) {
+                e.preventDefault();
+                const asetCheckboxes = document.querySelectorAll('.aset-checkbox');
+                const selectedAsets = Array.from(asetCheckboxes)
+                    .filter(cb => cb.checked)
+                    .map(cb => cb.value);
+
+                if (selectedAsets.length === 0) {
+                    alert('Pilih minimal satu aset untuk dicetak');
+                    return;
                 }
 
-                // Handle print button click
-                printSelectedButton.addEventListener('click', function() {
-                    const selectedAsets = Array.from(asetCheckboxes)
-                        .filter(cb => cb.checked)
-                        .map(cb => cb.value);
+                // Create form for printing
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/aset/print-multiple'; // Pastikan URL ini sesuai dengan route Anda
+                form.target = '_blank'; // Buka di tab baru
 
-                    if (selectedAsets.length === 0) {
-                        alert('Pilih minimal satu aset untuk dicetak');
-                        return;
-                    }
+                // Add CSRF token
+                const csrfInput = document.createElement('input');
+                csrfInput.type = 'hidden';
+                csrfInput.name = '_token';
+                csrfInput.value = document.querySelector('meta[name="csrf-token"]').content;
+                form.appendChild(csrfInput);
 
-                    // Create and submit form
-                    const form = document.createElement('form');
-                    form.method = 'POST';
-                    form.action = '{{ route('barcode.print-multiple') }}';
-                    form.target = '_blank';
-
-                    // Add CSRF token
-                    const csrfToken = document.createElement('input');
-                    csrfToken.type = 'hidden';
-                    csrfToken.name = '_token';
-                    csrfToken.value = '{{ csrf_token() }}';
-                    form.appendChild(csrfToken);
-
-                    // Add selected asets
-                    selectedAsets.forEach(asetId => {
-                        const input = document.createElement('input');
-                        input.type = 'hidden';
-                        input.name = 'selected_asets[]';
-                        input.value = asetId;
-                        form.appendChild(input);
-                    });
-
-                    document.body.appendChild(form);
-                    form.submit();
-                    document.body.removeChild(form);
+                // Add selected assets
+                selectedAsets.forEach(asetId => {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'selected_asets[]';
+                    input.value = asetId;
+                    form.appendChild(input);
                 });
-            });
 
-            function loadAsetDetail(id) {
-                fetch(`/aset/${id}/detail`)
-                    .then(response => response.text())
-                    .then(html => {
-                        document.getElementById('detailAsetContent').innerHTML = html;
-                    });
+                // Submit form
+                document.body.appendChild(form);
+                form.submit();
+                document.body.removeChild(form);
             }
 
-            function loadAsetEdit(id) {
-                fetch(`/aset/${id}/edit`)
-                    .then(response => response.text())
-                    .then(html => {
-                        document.getElementById('editAsetContent').innerHTML = html;
-                    });
+            function resetModalForm() {
+                const preview = document.querySelector('#imagePreview');
+                const previewImg = preview.querySelector('img');
+                const fileInput = document.querySelector('#foto');
+
+                previewImg.src = '';
+                preview.classList.add('d-none');
+                fileInput.value = '';
             }
 
-            // Replace the existing loadBarcode function
-            // Di bagian scripts pada index.blade.php
-            function loadBarcode(id) {
-                fetch(`/aset/${id}/barcode`)
-                    .then(response => response.text())
-                    .then(html => {
-                        document.getElementById('barcodeContent').innerHTML = html;
-                        const modal = new bootstrap.Modal(document.getElementById('barcodeModal'));
-                        modal.show();
+            // Image preview function
+            function previewImage(input) {
+                const preview = document.querySelector('#imagePreview');
+                const previewImg = preview.querySelector('img');
 
-                        // Tambahkan event listener setelah konten dimuat
-                        const printButton = document.getElementById('printQRButton');
-                        if (printButton) {
-                            printButton.addEventListener('click', function() {
-                                window.print();
-                            });
-                        }
-                    });
+                if (input.files && input.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        previewImg.src = e.target.result;
+                        preview.classList.remove('d-none');
+                    }
+                    reader.readAsDataURL(input.files[0]);
+                } else {
+                    previewImg.src = '';
+                    preview.classList.add('d-none');
+                }
+            }
+
+            // AJAX loading functions
+            async function loadAsetDetail(id) {
+                try {
+                    const response = await fetch(`/aset/${id}/detail`);
+                    const html = await response.text();
+                    document.getElementById('detailAsetContent').innerHTML = html;
+                } catch (error) {
+                    console.error('Error loading asset detail:', error);
+                }
+            }
+
+            async function loadAsetEdit(id) {
+                try {
+                    const response = await fetch(`/aset/${id}/edit`);
+                    const html = await response.text();
+                    document.getElementById('editAsetContent').innerHTML = html;
+                } catch (error) {
+                    console.error('Error loading asset edit:', error);
+                }
+            }
+
+            async function loadBarcode(id) {
+                try {
+                    const response = await fetch(`/aset/${id}/barcode`);
+                    const html = await response.text();
+                    document.getElementById('barcodeContent').innerHTML = html;
+
+                    const modal = new bootstrap.Modal(document.getElementById('barcodeModal'));
+                    modal.show();
+
+                    const printButton = document.getElementById('printQRButton');
+                    if (printButton) {
+                        printButton.addEventListener('click', () => window.print());
+                    }
+                } catch (error) {
+                    console.error('Error loading barcode:', error);
+                }
+            }
+
+            // Sweet Alert confirmation
+            function confirmDelete(id) {
+                Swal.fire({
+                    title: 'Hapus Aset?',
+                    text: "Data yang dihapus tidak dapat dikembalikan!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc3545',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = `/aset/${id}/delete`;
+                    }
+                });
             }
         </script>
     @endpush
@@ -423,74 +607,5 @@
                 border-color: #0d6efd;
             }
         </style>
-    @endpush
-
-    @push('scripts')
-        <script>
-            // Handle search functionality
-            document.getElementById('searchInput').addEventListener('keyup', function(e) {
-                // Implement search logic
-            });
-
-            // Handle filters
-            document.getElementById('jenisFilter').addEventListener('change', function(e) {
-                // Implement filter logic
-            });
-
-            document.getElementById('kepemilikanFilter').addEventListener('change', function(e) {
-                // Implement filter logic
-            });
-
-            // Confirm delete
-            function confirmDelete(id) {
-                Swal.fire({
-                    title: 'Hapus Aset?',
-                    text: "Data yang dihapus tidak dapat dikembalikan!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#dc3545',
-                    cancelButtonColor: '#6c757d',
-                    confirmButtonText: 'Ya, Hapus!',
-                    cancelButtonText: 'Batal'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Implement delete logic
-                        window.location.href = `/aset/${id}/delete`;
-                    }
-                });
-            }
-
-            // Load modals content
-            async function loadAsetDetail(id) {
-                const response = await fetch(`/aset/${id}/detail`);
-                const html = await response.text();
-                document.getElementById('detailAsetContent').innerHTML = html;
-            }
-
-            async function loadAsetEdit(id) {
-                const response = await fetch(`/aset/${id}/edit`);
-                const html = await response.text();
-                document.getElementById('editAsetContent').innerHTML = html;
-            }
-
-            // Di bagian scripts pada index.blade.php
-            function loadBarcode(id) {
-                fetch(`/aset/${id}/barcode`)
-                    .then(response => response.text())
-                    .then(html => {
-                        document.getElementById('barcodeContent').innerHTML = html;
-                        const modal = new bootstrap.Modal(document.getElementById('barcodeModal'));
-                        modal.show();
-
-                        // Tambahkan event listener setelah konten dimuat
-                        const printButton = document.getElementById('printQRButton');
-                        if (printButton) {
-                            printButton.addEventListener('click', function() {
-                                window.print();
-                            });
-                        }
-                    });
-            }
-        </script>
     @endpush
 @endsection

@@ -24,7 +24,16 @@
                             </div>
                             <div>
                                 <small class="text-muted d-block">Jenis</small>
-                                <strong>{{ $aset->jenis ?? '-' }}</strong>
+                                <strong>{{ $aset->jenis->jenis ?? '-' }}</strong>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="bg-light rounded-circle p-2 me-3">
+                                <i class="fas fa-barcode text-primary"></i>
+                            </div>
+                            <div>
+                                <small class="text-muted d-block">Nomor Aset</small>
+                                <strong>{{ $aset->nomor_aset ?? '-' }}</strong>
                             </div>
                         </div>
                         <div class="d-flex align-items-center">
@@ -86,6 +95,15 @@
                                 <strong>{{ $aset->created_at ?? ($aset->updated_at ?? '-') }}</strong>
                             </div>
                         </div>
+                        <div class="d-flex align-items-center">
+                            <div class="bg-light rounded-circle p-2 me-3">
+                                <i class="fas fa-clock text-primary"></i>
+                            </div>
+                            <div>
+                                <small class="text-muted d-block">Status Aset</small>
+                                <strong>{{ $aset->status_formatted ?? '-' }}</strong>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -119,6 +137,7 @@
                             <th>Tanggal</th>
                             <th>Kegiatan</th>
                             <th>Petugas</th>
+                            <th>Foto</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -128,16 +147,26 @@
                                 <td class="align-middle">{{ $k->created_at->format('d-m-Y') }}</td>
                                 <td class="align-middle">
                                     @if ($k->masterKegiatan->is_custom)
-                                        {{ $k->custom_kegiatan ?? '-'}}
+                                        {{ $k->custom_kegiatan ?? '-' }}
                                     @else
                                         {{ $k->masterKegiatan->kegiatan }}
                                     @endif
                                 </td>
                                 <td class="align-middle">{{ $k->user->name }}</td>
+                                <td class="align-middle">
+                                    @if ($k->foto)
+                                        <button type="button" class="btn btn-sm btn-primary view-photo"
+                                            data-photo="{{ asset('storage/' . $k->foto) }}">
+                                            <i class="fas fa-image me-1"></i>Lihat Foto
+                                        </button>
+                                    @else
+                                        <span class="text-muted">-</span>
+                                    @endif
+                                </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="text-center py-4 text-muted">
+                                <td colspan="5" class="text-center py-4 text-muted">
                                     <i class="fas fa-info-circle me-2"></i>Belum ada riwayat kegiatan
                                 </td>
                             </tr>

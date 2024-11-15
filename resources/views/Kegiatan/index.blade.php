@@ -32,7 +32,7 @@
                             <div class="col-sm-6">
                                 <div class="d-flex flex-column">
                                     <span class="text-muted small">Jenis Aset</span>
-                                    <span class="fw-medium">{{ $aset->jenis ?? '-' }}</span>
+                                    <span class="fw-medium">{{ $aset->jenis->jenis ?? '-' }}</span>
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -43,14 +43,26 @@
                             </div>
                             <div class="col-sm-6">
                                 <div class="d-flex flex-column">
+                                    <span class="text-muted small">Nomor Aset</span>
+                                    <span class="fw-medium">{{ $aset->nomor_aset ?? '-' }}</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="d-flex flex-column">
                                     <span class="text-muted small">Serial Number</span>
                                     <span class="fw-medium">{{ $aset->serial_number ?? '-' }}</span>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="d-flex flex-column">
-                                    <span class="text-muted small">Part Number</span>
-                                    <span class="fw-medium">{{ $aset->part_number ?? '-' }}</span>
+                                    <span class="text-muted small">Kepemilikan</span>
+                                    <span class="fw-medium">{{ $aset->kepemilikan->kepemilikan ?? '-' }}</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="d-flex flex-column">
+                                    <span class="text-muted small">Status Aset</span>
+                                    <span class="fw-medium">{{ $aset->status_formatted }}</span>
                                 </div>
                             </div>
                         </div>
@@ -73,8 +85,8 @@
                             </div>
                             <div class="col-sm-6">
                                 <div class="d-flex flex-column">
-                                    <span class="text-muted small">Status Kepemilikan</span>
-                                    <span class="fw-medium">{{ $aset->kepemilikan->kepemilikan ?? '-' }}</span>
+                                    <span class="text-muted small">Part Number</span>
+                                    <span class="fw-medium">{{ $aset->part_number ?? '-' }}</span>
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -88,9 +100,9 @@
 
                     <!-- Specifications -->
                     <div class="col-12">
-                        <div class="d-flex flex-column">
-                            <span class="text-muted small">Spesifikasi</span>
-                            <span class="fw-medium">{{ $aset->spek ?? '-' }}</span>
+                        <div class="p-3 bg-light rounded-3">
+                            <div class="text-muted small mb-1">Spesifikasi</div>
+                            <div class="fw-semibold">{{ $aset->spek ?? '-' }}</div>
                         </div>
                     </div>
                 </div>
@@ -111,7 +123,7 @@
                                 <th class="border-0">Tanggal</th>
                                 <th class="border-0">Kegiatan</th>
                                 <th class="border-0">PIC</th>
-                                <th class="border-0">Status</th>
+                                <th class="border-0">Foto</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -143,7 +155,35 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <span class="badge bg-success">Selesai</span>
+                                        @if ($k->foto)
+                                            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                                                data-bs-target="#photoModal-{{ $k->id }}">
+                                                <i class="fas fa-image me-1"></i>Lihat Foto
+                                            </button>
+
+                                            <!-- Modal for this photo -->
+                                            <div class="modal fade" id="photoModal-{{ $k->id }}" tabindex="-1">
+                                                <div class="modal-dialog modal-lg">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header border-0 pb-0">
+                                                            <h5 class="modal-title">Foto Kegiatan</h5>
+                                                            <button type="button" class="btn-close"
+                                                                data-bs-dismiss="modal"></button>
+                                                        </div>
+                                                        <div class="modal-body text-center">
+                                                            <img src="{{ asset('storage/' . $k->foto) }}"
+                                                                alt="Foto Kegiatan" class="img-fluid rounded">
+                                                        </div>
+                                                        <div class="modal-footer border-0">
+                                                            <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">Tutup</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @else
+                                            <span class="text-muted">-</span>
+                                        @endif
                                     </td>
                                 </tr>
                             @empty
@@ -184,7 +224,7 @@
                     <h5 class="modal-title">Tambah Kegiatan Baru</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form action="{{ route('kegiatan.store', $aset->id) }}" method="POST">
+                <form action="{{ route('kegiatan.store', $aset->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-body">
                         <div class="row g-3">
@@ -228,6 +268,17 @@
                                     @error('custom_kegiatan')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label for="foto" class="form-label">Foto Kegiatan</label>
+                                    <input type="file" class="form-control" id="foto" name="foto"
+                                        accept="image/*" onchange="previewImage(this)">
+                                    <div id="imagePreview" class="mt-2 d-none">
+                                        <img src="" alt="Preview" class="img-fluid rounded"
+                                            style="max-height: 200px">
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -358,6 +409,25 @@
 
     @push('scripts')
         <script>
+            function previewImage(input) {
+                const preview = document.querySelector('#imagePreview');
+                const previewImg = preview.querySelector('img');
+
+                if (input.files && input.files[0]) {
+                    const reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        previewImg.src = e.target.result;
+                        preview.classList.remove('d-none');
+                    }
+
+                    reader.readAsDataURL(input.files[0]);
+                } else {
+                    previewImg.src = '';
+                    preview.classList.add('d-none');
+                }
+            }
+
             document.addEventListener('DOMContentLoaded', function() {
                 const masterKegiatanSelect = document.getElementById('id_master_kegiatan');
                 const customKegiatanDiv = document.getElementById('customKegiatanDiv');
@@ -411,6 +481,17 @@
                         alert('Terjadi kesalahan saat memperbarui data.');
                     }
                 });
+
+                const createModal = document.getElementById('createKegiatanModal');
+                createModal.addEventListener('hidden.bs.modal', function() {
+                    const preview = document.querySelector('#imagePreview');
+                    const previewImg = preview.querySelector('img');
+                    const fileInput = document.querySelector('#foto');
+
+                    previewImg.src = '';
+                    preview.classList.add('d-none');
+                    fileInput.value = '';
+                });
             });
         </script>
     @endpush
@@ -429,6 +510,20 @@
 
             .pagination {
                 margin-bottom: 0;
+            }
+
+            .modal-lg {
+                max-width: 800px;
+            }
+
+            .modal img.img-fluid {
+                max-height: 70vh;
+                width: auto;
+            }
+
+            #imagePreview img {
+                max-width: 100%;
+                height: auto;
             }
         </style>
     @endpush

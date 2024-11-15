@@ -17,6 +17,7 @@ class Kegiatan extends Model
         'id_user',
         'id_master_kegiatan',
         'custom_kegiatan',
+        'foto',
     ];
 
     public function aset()
@@ -24,13 +25,13 @@ class Kegiatan extends Model
         return $this->belongsTo(Aset::class, 'id_aset');
     }
 
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'id_user');
-    }
-
     public function masterKegiatan()
     {
         return $this->belongsTo(MasterKegiatan::class, 'id_master_kegiatan');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'id_user');
     }
 }

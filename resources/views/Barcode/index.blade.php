@@ -1,12 +1,12 @@
 {{-- MODAL QR CODE --}}
 <div class="qr-container p-4 bg-light border rounded mb-4">
     <div class="d-flex flex-column align-items-center">
-        <div class="qr-code-wrapper d-flex justify-content-center align-items-center mb-4">
+        <div class="qr-code-wrapper d-flex justify-content-center align-items-center">
             <div style="width: 180px; height: 180px;">{!! $qrcode !!}</div>
         </div>
-        <div class="text-center mb-3 mt-4">
-            <h6 class="mb-1">{{ $aset->nama_barang }}</h6>
-            <small class="text-muted">{{ $aset->serial_number }}</small>
+        <div class="text-center mb-3">
+            <h6 class="mb-1">Nomor Aset</h6>
+            <small class="text-muted">{{ $aset->nomor_aset }}</small>
         </div>
     </div>
     <div class="logos d-flex justify-content-center align-items-center gap-3 mb-3">

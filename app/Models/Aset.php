@@ -18,7 +18,7 @@ class Aset extends Model
         'part_number',
         'spek',
         'pengguna',
-        'foto',
+        'status',
         'tahun_kepemilikan',
         'id_kepemilikan',
     ];
@@ -36,9 +36,35 @@ class Aset extends Model
             ->select(['id', 'kepemilikan']);
     }
 
+    public function jenis()
+    {
+        return $this->belongsTo(Jenis::class, 'id_master_jenis')
+            ->select(['id', 'jenis']);
+    }
+
     public function kegiatan()
     {
         return $this->hasMany(Kegiatan::class, 'id_aset')
             ->select(['id', 'id_aset', 'id_master_kegiatan', 'id_user', 'created_at']);
+    }
+
+    public static function getStatusOptions()
+    {
+        return [
+            'baik' => 'Baik',
+            'kurang_layak' => 'Kurang Layak',
+            'rusak' => 'Rusak'
+        ];
+    }
+
+    protected function getStatusFormattedAttribute()
+    {
+        $statuses = [
+            'baik' => 'Baik',
+            'kurang_layak' => 'Kurang Layak', 
+            'rusak' => 'Rusak'
+        ];
+
+        return $statuses[$this->status] ?? $this->status;
     }
 }

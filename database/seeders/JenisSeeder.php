@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\MasterJenis;
+use App\Models\Jenis;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -25,7 +25,7 @@ class JenisSeeder extends Seeder
 
         foreach ($jenis as $j)
         {
-            MasterJenis::create([
+            Jenis::create([
                 'jenis' => $j['jenis']
             ]);
         }
