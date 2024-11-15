@@ -32,25 +32,25 @@
                             <div class="col-sm-6">
                                 <div class="d-flex flex-column">
                                     <span class="text-muted small">Jenis Aset</span>
-                                    <span class="fw-medium">{{ $aset->jenis }}</span>
+                                    <span class="fw-medium">{{ $aset->jenis ?? '-' }}</span>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="d-flex flex-column">
                                     <span class="text-muted small">Nama Barang</span>
-                                    <span class="fw-medium">{{ $aset->nama_barang }}</span>
+                                    <span class="fw-medium">{{ $aset->nama_barang ?? '-' }}</span>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="d-flex flex-column">
                                     <span class="text-muted small">Serial Number</span>
-                                    <span class="fw-medium">{{ $aset->serial_number }}</span>
+                                    <span class="fw-medium">{{ $aset->serial_number ?? '-' }}</span>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="d-flex flex-column">
                                     <span class="text-muted small">Part Number</span>
-                                    <span class="fw-medium">{{ $aset->part_number }}</span>
+                                    <span class="fw-medium">{{ $aset->part_number ?? '-' }}</span>
                                 </div>
                             </div>
                         </div>
@@ -62,19 +62,19 @@
                             <div class="col-sm-6">
                                 <div class="d-flex flex-column">
                                     <span class="text-muted small">Pengguna</span>
-                                    <span class="fw-medium">{{ $aset->pengguna }}</span>
+                                    <span class="fw-medium">{{ $aset->pengguna ?? '-' }}</span>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="d-flex flex-column">
                                     <span class="text-muted small">Tahun Kepemilikan</span>
-                                    <span class="fw-medium">{{ $aset->tahun_kepemilikan }}</span>
+                                    <span class="fw-medium">{{ $aset->tahun_kepemilikan ?? '-' }}</span>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="d-flex flex-column">
                                     <span class="text-muted small">Status Kepemilikan</span>
-                                    <span class="fw-medium">{{ $aset->kepemilikan->kepemilikan }}</span>
+                                    <span class="fw-medium">{{ $aset->kepemilikan->kepemilikan ?? '-' }}</span>
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -90,7 +90,7 @@
                     <div class="col-12">
                         <div class="d-flex flex-column">
                             <span class="text-muted small">Spesifikasi</span>
-                            <span class="fw-medium">{{ $aset->spek }}</span>
+                            <span class="fw-medium">{{ $aset->spek ?? '-' }}</span>
                         </div>
                     </div>
                 </div>
@@ -115,7 +115,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($kegiatan as $index => $k)
+                            @forelse ($kegiatan as $index => $k)
                                 <tr>
                                     <td class="ps-4">{{ $loop->iteration }}</td>
                                     <td>{{ $k->created_at->format('d M Y, H:i') }}</td>
@@ -146,7 +146,18 @@
                                         <span class="badge bg-success">Selesai</span>
                                     </td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td class="text-center" colspan="5" style="height: 100px;">
+                                        <div class="d-flex align-items-center justify-content-center gap-2">
+                                            <div class="bg-light rounded-circle p-1">
+                                                <i class="fas fa-info-circle me-2"></i>
+                                            </div>
+                                            <span>Belum Ada Riwayat Kegiatan</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>

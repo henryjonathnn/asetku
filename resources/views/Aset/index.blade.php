@@ -63,6 +63,16 @@
                     <table class="table table-hover align-middle mb-0">
                         <thead class="bg-light">
                             <tr class="text-center">
+                                <div class="mt-4 ms-3">
+                                    <button type="button" id="printSelected" class="btn btn-primary" disabled>
+                                        <i class="fas fa-print me-2"></i>Cetak QR Code Terpilih
+                                    </button>
+                                </div>
+                                <th class="border-0 ps-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="selectAll">
+                                    </div>
+                                </th>
                                 <th class="border-0 ps-4">No</th>
                                 <th class="border-0">ID Aset</th>
                                 <th class="border-0">Jenis</th>
@@ -74,6 +84,12 @@
                         <tbody>
                             @foreach ($aset as $index => $item)
                                 <tr class="text-center">
+                                    <td class="ps-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input aset-checkbox" type="checkbox"
+                                                value="{{ $item->id }}" name="selected_asets[]">
+                                        </div>
+                                    </td>
                                     <td class="ps-4">
                                         <span class="fw-medium">{{ $loop->iteration }}</span>
                                     </td>
@@ -170,8 +186,8 @@
                             <!-- Numbers -->
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    <input type="text" name="serial_number" class="form-control" id="createSerialNumber"
-                                        placeholder="Serial Number">
+                                    <input type="text" name="serial_number" class="form-control"
+                                        id="createSerialNumber" placeholder="Serial Number">
                                     <label for="createSerialNumber">Serial Number</label>
                                 </div>
                             </div>
@@ -279,6 +295,74 @@
 
     @push('scripts')
         <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const selectAllCheckbox = document.getElementById('selectAll');
+                const asetCheckboxes = document.querySelectorAll('.aset-checkbox');
+                const printSelectedButton = document.getElementById('printSelected');
+
+                // Handle Select All checkbox
+                selectAllCheckbox.addEventListener('change', function() {
+                    asetCheckboxes.forEach(checkbox => {
+                        checkbox.checked = this.checked;
+                    });
+                    updatePrintButtonState();
+                });
+
+                // Handle individual checkboxes
+                asetCheckboxes.forEach(checkbox => {
+                    checkbox.addEventListener('change', function() {
+                        const allChecked = Array.from(asetCheckboxes).every(cb => cb.checked);
+                        const anyChecked = Array.from(asetCheckboxes).some(cb => cb.checked);
+                        selectAllCheckbox.checked = allChecked;
+                        updatePrintButtonState();
+                    });
+                });
+
+                // Update print button state
+                function updatePrintButtonState() {
+                    const checkedBoxes = Array.from(asetCheckboxes).filter(cb => cb.checked);
+                    printSelectedButton.disabled = checkedBoxes.length === 0;
+                }
+
+                // Handle print button click
+                printSelectedButton.addEventListener('click', function() {
+                    const selectedAsets = Array.from(asetCheckboxes)
+                        .filter(cb => cb.checked)
+                        .map(cb => cb.value);
+
+                    if (selectedAsets.length === 0) {
+                        alert('Pilih minimal satu aset untuk dicetak');
+                        return;
+                    }
+
+                    // Create and submit form
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '{{ route('barcode.print-multiple') }}';
+                    form.target = '_blank';
+
+                    // Add CSRF token
+                    const csrfToken = document.createElement('input');
+                    csrfToken.type = 'hidden';
+                    csrfToken.name = '_token';
+                    csrfToken.value = '{{ csrf_token() }}';
+                    form.appendChild(csrfToken);
+
+                    // Add selected asets
+                    selectedAsets.forEach(asetId => {
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = 'selected_asets[]';
+                        input.value = asetId;
+                        form.appendChild(input);
+                    });
+
+                    document.body.appendChild(form);
+                    form.submit();
+                    document.body.removeChild(form);
+                });
+            });
+
             function loadAsetDetail(id) {
                 fetch(`/aset/${id}/detail`)
                     .then(response => response.text())

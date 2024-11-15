@@ -21,17 +21,22 @@ class Aset extends Model
         'id_kepemilikan',
     ];
 
-    protected $cast = [
+    protected $casts = [
         'tahun_kepemilikan' => 'integer',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
+    // Define relationship with eager loading constraints
     public function kepemilikan()
     {
-        return $this->belongsTo(Kepemilikan::class, 'id_kepemilikan');
+        return $this->belongsTo(Kepemilikan::class, 'id_kepemilikan')
+            ->select(['id', 'kepemilikan']);
     }
 
     public function kegiatan()
     {
-        return $this->hasMany(Kegiatan::class, 'id_aset');
+        return $this->hasMany(Kegiatan::class, 'id_aset')
+            ->select(['id', 'id_aset', 'id_master_kegiatan', 'id_user', 'created_at']);
     }
 }

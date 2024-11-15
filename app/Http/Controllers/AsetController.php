@@ -4,24 +4,54 @@ namespace App\Http\Controllers;
 
 use App\Models\Aset;
 use App\Models\Kepemilikan;
-use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\DB;
 
 class AsetController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $aset = Aset::paginate(10); // Adjust the number of items per page as needed
+        // Tetap menggunakan all() untuk kemudahan development
+        $aset = Aset::with('kepemilikan')->paginate(10);
         $kepemilikan = Kepemilikan::all();
 
         return view('aset.index', compact('aset', 'kepemilikan'));
     }
 
+    // Optimasi khusus untuk modal/detail view
+    public function detail(string $uuid)
+    {
+        $aset = Aset::select([
+            'id',
+            'nama_barang',
+            'jenis',
+            'serial_number',
+            'part_number',
+            'spek',
+            'pengguna',
+            'tahun_kepemilikan',
+            'id_kepemilikan',
+            'created_at',
+        ])
+            ->with(['kegiatan' => function ($query) {
+                $query->select('id', 'id_aset', 'id_master_kegiatan', 'id_user', 'created_at')
+                    ->with([
+                        'masterKegiatan:id,kegiatan',
+                        'user:id,name'
+                    ])
+                    ->latest()
+                    ->take(10);
+            }])
+            ->findOrFail($uuid);
+
+        if (request()->ajax()) {
+            return response()->json([
+                'html' => view('aset._show', compact('aset'))->render()
+            ]);
+        }
+
+        return view('aset._show', compact('aset'));
+    }
 
     public function store(Request $request)
     {
@@ -38,32 +68,47 @@ class AsetController extends Controller
 
         $aset = Aset::create($validated);
 
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Data aset berhasil ditambahkan!',
+                'id' => $aset->id
+            ]);
+        }
+
         return redirect()->route('aset.index')
             ->with('success', 'Data aset berhasil ditambahkan!')
             ->with('generated_uuid', $aset->id);
     }
 
-    public function detail(string $uuid)
-    {
-        $aset = Aset::with(['kegiatan' => function ($query) {
-            $query->with(['masterKegiatan', 'user'])
-                ->latest();
-        }])->findOrFail($uuid);
-        return view('aset._show', compact('aset'));
-    }
-
     public function edit($uuid)
     {
-        $aset = Aset::findOrFail($uuid);
-        $kepemilikan = Kepemilikan::all();
+        // Optimasi untuk modal edit
+        $aset = Aset::select([
+            'id',
+            'nama_barang',
+            'jenis',
+            'serial_number',
+            'part_number',
+            'spek',
+            'pengguna',
+            'tahun_kepemilikan',
+            'id_kepemilikan'
+        ])->findOrFail($uuid);
+
+        $kepemilikan = Kepemilikan::select('id', 'kepemilikan')->get();
+
+        if (request()->ajax()) {
+            return response()->json([
+                'html' => view('aset._edit', compact('aset', 'kepemilikan'))->render()
+            ]);
+        }
+
         return view('aset._edit', compact('aset', 'kepemilikan'));
     }
 
     public function update(Request $request, string $uuid)
     {
-
-        $aset = Aset::findOrFail($uuid);
-
         $validated = $request->validate([
             'nama_barang' => 'required|string|max:255',
             'jenis' => 'required|string|max:255',
@@ -75,9 +120,25 @@ class AsetController extends Controller
             'id_kepemilikan' => 'required|exists:kepemilikans,id',
         ]);
 
+        $aset = Aset::findOrFail($uuid);
         $aset->update($validated);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Data aset berhasil diperbarui!'
+            ]);
+        }
 
         return redirect()->route('aset.index')
             ->with('success', 'Data aset berhasil diperbarui!');
+    }
+
+    public function printSelected(Request $request)
+    {
+        $asetIds = $request->input('selected_asets', []);
+        $asets = Aset::whereIn('id', $asetIds)->get();
+
+        return view('aset.print-qrcodes', compact('asets'));
     }
 }
