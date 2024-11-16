@@ -336,9 +336,23 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    <input type="text" name="jenis" class="form-control" id="jenis"
-                                        value="{{ $aset->jenis }}" placeholder="Jenis" required>
-                                    <label for="jenis">Jenis</label>
+                                    <select name="id_master_jenis" class="form-select" id="editJenis" required>
+                                        <option value="">Pilih Jenis</option>
+                                        @foreach ($jenis as $j)
+                                            <option value="{{ $j->id }}"
+                                                {{ $aset->id_master_jenis == $j->id ? 'selected' : '' }}>
+                                                {{ $j->jenis }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <label for="editJenis">Jenis</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" name="nomor_aset" class="form-control" id="nomor_aset"
+                                        value="{{ $aset->nomor_aset }}" placeholder="Serial Number" required>
+                                    <label for="nomor_aset">Nomor Aset</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -368,6 +382,18 @@
                                         id="tahun_kepemilikan" value="{{ $aset->tahun_kepemilikan }}"
                                         placeholder="Tahun Kepemilikan" required>
                                     <label for="tahun_kepemilikan">Tahun Kepemilikan</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <select name="status" class="form-select" id="editStatus">
+                                        @foreach(App\Models\Aset::getStatusOptions() as $value => $label)
+                                            <option value="{{ $value }}" {{ $aset->status == $value ? 'selected' : '' }}>
+                                                {{ $label }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <label for="status">Jenis</label>
                                 </div>
                             </div>
                             <div class="col-12">

@@ -103,7 +103,7 @@ class KegiatanController extends Controller
             'part_number' => 'required',
             'pengguna' => 'required',
             'tahun_kepemilikan' => 'required|numeric',
-            'foto' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
+            'status' => 'required',
             'id_kepemilikan' => 'required',
             'spek' => 'required',
         ]);

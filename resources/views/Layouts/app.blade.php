@@ -21,62 +21,207 @@
 
         .main-content {
             padding: 20px;
-            margin: 12px auto
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
-        .navbar-collapse {
-            margin: 8px 28px;
+        .navbar {
+            background-color: #00813f;
+            padding: 0;
+            height: 70px;
+            /* Increased height */
         }
 
-        .navbar-brand {
-            font-size: 1.5rem;
+        .navbar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            padding: 0 15px;
+        }
+
+        .branding-section {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            /* Increased gap */
+            height: 100%;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            /* Increased gap */
+            height: 100%;
+        }
+
+        .logo-container {
+            height: 55px;
+            /* Adjusted height */
+            width: 55px;
+            /* Added width to maintain aspect ratio */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 6px;
+            background-color: white;
+            border-radius: 50%;
+            box-shadow: 0 0 0 2px white;
+        }
+
+        .logo-container img {
+            height: 100%;
+            width: 100%;
+            object-fit: contain;
+        }
+
+        .hospital-info {
+            color: white;
+            padding-left: 5px;
+        }
+
+        .hospital-name {
+            font-size: 1.3rem;
+            /* Increased font size */
             font-weight: bold;
+            margin: 0;
+            line-height: 1.3;
+            white-space: nowrap;
         }
 
-        .dropdown-menu {
-            right: 0;
-            left: auto;
+        .hospital-location {
+            font-size: 0.9rem;
+            /* Increased font size */
+            margin: 0;
         }
 
-        .table-bordered {
-            border: 1px solid #000000 !important;
-            /* Atur ketebalan border tabel */
+        .contact-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            /* Increased gap */
+            color: white;
+            font-size: 0.85rem;
+            /* Increased font size */
+            margin-left: 25px;
         }
 
-        .table-bordered th,
-        .table-bordered td {
-            border-width: 1px;
-            /* Ketebalan border antara sel */
+        .contact-info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            /* Increased gap */
+            white-space: nowrap;
+        }
+
+        .user-section {
+            margin-left: auto;
+            padding-right: 15px;
+        }
+
+        .user-dropdown {
+            color: white;
+            cursor: pointer;
+            font-size: 1rem;
+            /* Increased font size */
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .user-dropdown:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1200px) {
+            .contact-info-item span {
+                display: none;
+            }
+
+            .contact-info-item i {
+                font-size: 1.1rem;
+            }
+
+            .contact-info {
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                height: 60px;
+            }
+
+            .hospital-name {
+                font-size: 1.1rem;
+            }
+
+            .hospital-location {
+                font-size: 0.8rem;
+            }
+
+            .logo-container {
+                height: 45px;
+                width: 45px;
+            }
+
+            .contact-info {
+                display: none;
+            }
         }
     </style>
-
-    @stack('styles')
 </head>
 
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+    <nav class="navbar">
         <div class="container">
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <a class="navbar-brand" href="#">RSUD Daha Husada Kediri</a>
+            <div class="navbar-container">
+                <div class="branding-section">
+                    <div class="logo-section">
+                        <div class="logo-container">
+                            <img src="/img/logo.png" alt="Logo RSUD">
+                        </div>
+                        <div class="hospital-info">
+                            <h1 class="hospital-name">RSUD Daha Husada</h1>
+                            <h3 class="hospital-location">Kota Kediri</h3>
+                        </div>
+                    </div>
 
-                <!-- User Menu -->
-                <!-- User Menu -->
+                    <div class="contact-info">
+                        <div class="contact-info-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Jl. Veteran No.48, Mojoroto, Kediri</span>
+                        </div>
+                        <div class="contact-info-item">
+                            <i class="fas fa-phone"></i>
+                            <span>(0354) 771062</span>
+                        </div>
+                        <div class="contact-info-item">
+                            <i class="fas fa-envelope"></i>
+                            <span>dahahusada@jatimprov.go.id</span>
+                        </div>
+                    </div>
+                </div>
                 @if (!Route::is('kegiatan.*'))
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-white" href="#" role="button"
+                    <div class="user-section">
+                        <div class="dropdown">
+                            <a class="user-dropdown dropdown-toggle" href="#" role="button"
                                 data-bs-toggle="dropdown">
                                 <i class="fas fa-user"></i> {{ Auth::user()->name ?? 'User' }}
                             </a>
-                            <ul class="dropdown-menu">
+                            <ul class="dropdown-menu dropdown-menu-end">
                                 <li><a class="dropdown-item" href="#"><i class="fas fa-cog"></i> Pengaturan</a>
                                 </li>
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
                                 <li>
-                                    <form action={{ route('logout') }} method="POST">
+                                    <form action="{{ route('logout') }}" method="POST">
                                         @csrf
                                         <button type="submit" class="dropdown-item">
                                             <i class="fas fa-sign-out-alt"></i> Logout
@@ -84,12 +229,13 @@
                                     </form>
                                 </li>
                             </ul>
-                        </li>
-                    </ul>
+                        </div>
+                    </div>
                 @endif
             </div>
         </div>
     </nav>
+
 
     <!-- Main Content -->
     <div class="container main-content">
