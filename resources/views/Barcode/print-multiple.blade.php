@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Print QR Codes</title>
     <style>
@@ -12,13 +13,13 @@
         .qr-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
+            gap: 10px;
             padding: 4px;
         }
 
         .qr-item {
             border: 1px solid #ddd;
-            padding: 4px;
+            padding: 8px;
             text-align: center;
             display: flex;
             flex-direction: column;
@@ -28,9 +29,9 @@
         }
 
         .qr-code {
-            width: 180px;
-            height: 180px;
-            margin: 0 auto;
+            width: 150px;
+            height: 150px;
+            margin-left: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -41,18 +42,18 @@
             height: 100% !important;
             transform: none !important;
             display: block !important;
-            margin-left: 32px;
+            margin: 0 !important;
         }
 
         .aset-info {
-            margin-top: 5px;
+            margin-top: 2px;
             text-align: center;
             width: 100%;
         }
 
         .aset-info p {
-            margin: 5px 0;
-            font-size: 12px;
+            margin: 2px 0;
+            font-size: 11px;
             word-break: break-all;
         }
 
@@ -60,33 +61,28 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-top: 5px;
-            gap: 10px;
+            margin-top: 4px;
+            gap: 8px;
         }
 
         .logo-wrapper {
             display: flex;
             align-items: center;
-            height: 80px; /* Ditingkatkan dari 40px ke 80px */
+            height: 60px;
         }
 
         .gambar-rs {
-            height: 80px; /* Ditingkatkan dari 40px ke 80px */
+            height: 80px;
             width: auto;
         }
 
         .gambar-it {
-            height: 50px; /* Ditingkatkan dari 20px ke 50px */
+            height: 40px;
             width: auto;
-            margin-left: 10px;
-            margin-bottom: 8px;
+            margin-left: 8px;
+            margin-bottom: -6px;
         }
 
-        .print-controls {
-            margin-bottom: 20px;
-            padding: 10px;
-            background: #f5f5f5;
-        }
 
         .btn {
             padding: 8px 15px;
@@ -106,7 +102,7 @@
             color: white;
         }
 
-        /* Print styles that maintain website layout */
+        /* Print styles */
         @page {
             size: A4;
             margin: 0.5cm;
@@ -123,65 +119,45 @@
             }
 
             .qr-grid {
-                display: grid;
-                grid-template-columns: repeat(4, 1fr);
-                gap: 20px;
-                padding: 4px;
-                margin: 0;
+                gap: 10px;
             }
 
             .qr-item {
                 break-inside: avoid;
                 page-break-inside: avoid;
-                margin: 0;
-                padding: 4px;
-                border: 1px solid #ddd;
-                height: auto;
-            }
-
-            .qr-code {
-                width: 180px;
-                height: 180px;
-                margin: 0 auto;
+                margin-left: 25px;
+                display: flex;
             }
 
             .qr-code svg {
-                width: 100% !important;
-                height: 100% !important;
-                transform: none !important;
-                -webkit-transform: none !important;
-                margin-left: 32px !important;
+                margin: 0 !important;
             }
 
+            .qr-code,
             .aset-info {
-                margin-top: 5px;
-            }
-
-            .aset-info p {
-                margin: 5px 0;
-                font-size: 12px;
+                margin: inherit;
             }
 
             .logos {
-                margin-top: 5px;
+                margin: 0, auto;
             }
 
             .logo-wrapper {
-                height: 80px; /* Disesuaikan untuk print juga */
+                height: 60px;
             }
 
             .gambar-rs {
-                height: 80px; /* Disesuaikan untuk print juga */
+                height: 70px;
             }
 
             .gambar-it {
-                height: 50px; /* Disesuaikan untuk print juga */
-                margin-left: 10px;
-                margin-bottom: 8px;
+                height: 35px;
             }
+
         }
     </style>
 </head>
+
 <body>
     <div class="print-controls">
         <button class="btn btn-print" onclick="window.print()">Print QR Codes</button>
@@ -190,7 +166,7 @@
 
     <div class="qr-grid">
         @foreach ($asetsWithQR as $item)
-            @for ($u = 0; $u < 5; $u++)
+            {{-- @for ($u = 0; $u < 5; $u++) --}}
                 <div class="qr-item">
                     <div class="qr-code">
                         {!! $item['qrcode'] !!}
@@ -220,4 +196,5 @@
         });
     </script>
 </body>
+
 </html>
