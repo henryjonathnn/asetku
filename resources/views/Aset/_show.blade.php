@@ -2,7 +2,7 @@
     <!-- Asset Information Card -->
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-light py-3">
-            <h6 class="mb-0 fw-bold text-primary">Informasi Aset</h6>
+            <h6 class="mb-0 fw-bold text-primary">Informasi Aset ID {{ $aset->id }}</h6>
         </div>
         <div class="card-body">
             <div class="row g-4">

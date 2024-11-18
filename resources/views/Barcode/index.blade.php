@@ -5,8 +5,8 @@
             <div style="width: 180px; height: 180px;">{!! $qrcode !!}</div>
         </div>
         <div class="text-center mb-3">
-            <h6 class="mb-1">Nomor Aset</h6>
-            <small class="text-muted">{{ $aset->nomor_aset }}</small>
+            <h6 class="mb-1">ID Aset</h6>
+            <small class="text-muted">{{ $aset->id }}</small>
         </div>
     </div>
     <div class="logos d-flex justify-content-center align-items-center gap-3 mb-3">
