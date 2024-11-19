@@ -56,7 +56,7 @@ class KegiatanController extends Controller
             'username' => 'required|string',
             'password' => 'required|string',
             'id_master_kegiatan' => 'required|exists:master_kegiatans,id',
-            'custom_kegiatan' => 'nullable|string|required_if:is_custom,1',
+            'note' => 'nullable|string|required_if:is_custom,1',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -82,7 +82,7 @@ class KegiatanController extends Controller
             'id_aset' => $aset->id,
             'id_user' => $user->id,
             'id_master_kegiatan' => $masterKegiatan->id,
-            'custom_kegiatan' => $masterKegiatan->is_custom ? $request->custom_kegiatan : null,
+            'note' => $masterKegiatan->is_custom ? $request->note : null,
             'foto' => $fotoPath,
         ]);
 

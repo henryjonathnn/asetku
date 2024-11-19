@@ -16,7 +16,7 @@ class Kegiatan extends Model
         'id_aset',
         'id_user',
         'id_master_kegiatan',
-        'custom_kegiatan',
+        'note',
         'foto',
     ];
 

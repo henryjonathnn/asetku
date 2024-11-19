@@ -41,7 +41,7 @@ class AsetController extends Controller
             'created_at',
         ])
             ->with(['kegiatan' => function ($query) {
-                $query->select('id', 'id_aset', 'id_master_kegiatan', 'id_user', 'custom_kegiatan', 'foto', 'created_at')
+                $query->select('id', 'id_aset', 'id_master_kegiatan', 'id_user', 'note', 'foto', 'created_at')
                     ->with([
                         'masterKegiatan:id,kegiatan,is_custom',
                         'user:id,name'

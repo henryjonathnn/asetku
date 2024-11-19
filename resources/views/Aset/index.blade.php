@@ -62,7 +62,7 @@
                 <div class="table-responsive">
                     <table class="table table-hover align-middle mb-0">
                         <thead class="bg-light">
-                            <tr class="text-center">
+                            <tr class="text-left">
                                 <div class="mt-4 ms-3">
                                     <button type="button" id="printSelected" class="btn btn-primary" disabled>
                                         <i class="fas fa-print me-2"></i>Cetak QR Code Terpilih
@@ -83,7 +83,7 @@
                         </thead>
                         <tbody>
                             @foreach ($aset as $index => $item)
-                                <tr class="text-center">
+                                <tr class="text-left">
                                     <td class="ps-4">
                                         <div class="form-check">
                                             <input class="form-check-input aset-checkbox" type="checkbox"
@@ -107,6 +107,7 @@
                                             <div>
                                                 <span class="d-block fw-medium">{{ $item->nama_barang }}</span>
                                                 <small class="text-muted">SN: {{ $item->serial_number }}</small>
+                                                <small class="text-muted">PN: {{ $item->part_number }}</small>
                                             </div>
                                         </div>
                                     </td>

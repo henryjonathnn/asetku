@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignUuid('id_aset')->constrained('asets')->onDelete('cascade');
             $table->foreignId('id_user')->constrained('users');
             $table->foreignId('id_master_kegiatan')->constrained('master_kegiatans');
-            $table->string('custom_kegiatan')->nullable(); // Untuk input bebas ketika memilih "Lainnya"
+            $table->string('note')->nullable();
             $table->string('foto')->nullable();
             $table->timestamps();
 

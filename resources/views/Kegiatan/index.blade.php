@@ -130,7 +130,7 @@
                             @forelse ($kegiatan as $index => $k)
                                 <tr>
                                     <td class="ps-4">{{ $loop->iteration }}</td>
-                                    <td>{{ $k->created_at->format('d M Y, H:i') }}</td>
+                                    <td>{{ $k->created_at->format('d M Y') }}</td>
                                     <td>
                                         <div class="d-flex align-items-center gap-2">
                                             <div class="bg-light rounded p-1">
@@ -138,8 +138,8 @@
                                             </div>
                                             <div>
                                                 @if ($k->masterKegiatan->is_custom)
-                                                    <span class="d-block fw-medium">Kegiatan Lainnya</span>
-                                                    <small class="text-muted">{{ $k->custom_kegiatan }}</small>
+                                                    <span class="d-block fw-medium">{{$k->masterKegiatan->kegiatan}}</span>
+                                                    <small class="text-muted">{{ $k->note }}</small>
                                                 @else
                                                     <span class="fw-medium">{{ $k->masterKegiatan->kegiatan }}</span>
                                                 @endif
@@ -260,12 +260,12 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-12" id="customKegiatanDiv" style="display: none;">
+                            <div class="col-12" id="customKegiatanDiv">
                                 <div class="form-floating">
-                                    <textarea class="form-control @error('custom_kegiatan') is-invalid @enderror" id="custom_kegiatan"
-                                        name="custom_kegiatan" style="height: 100px" placeholder="Deskripsi Kegiatan"></textarea>
-                                    <label for="custom_kegiatan">Deskripsi Kegiatan</label>
-                                    @error('custom_kegiatan')
+                                    <textarea class="form-control @error('note') is-invalid @enderror" id="note"
+                                        name="note" style="height: 100px" placeholder="Deskripsi Kegiatan"></textarea>
+                                    <label for="note">Deskripsi Kegiatan</label>
+                                    @error('note')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -457,7 +457,7 @@
             document.addEventListener('DOMContentLoaded', function() {
                 const masterKegiatanSelect = document.getElementById('id_master_kegiatan');
                 const customKegiatanDiv = document.getElementById('customKegiatanDiv');
-                const customKegiatanTextarea = document.getElementById('custom_kegiatan');
+                const customKegiatanTextarea = document.getElementById('note');
                 const editAssetModal = new bootstrap.Modal(document.getElementById('editAssetModal'));
                 const form = document.querySelector('form');
 

@@ -154,6 +154,12 @@
                 height: 35px;
             }
 
+            .aset-info p {
+                font-size: 8px;
+                text-align: center;
+                display: flex;
+            }
+
         }
     </style>
 </head>
@@ -167,20 +173,20 @@
     <div class="qr-grid">
         @foreach ($asetsWithQR as $item)
             {{-- @for ($u = 0; $u < 5; $u++) --}}
-                <div class="qr-item">
-                    <div class="qr-code">
-                        {!! $item['qrcode'] !!}
-                    </div>
-                    <div class="aset-info">
-                        <p>{{ $item['aset']->id ?? '-' }}</p>
-                    </div>
-                    <div class="logos">
-                        <div class="logo-wrapper">
-                            <img src="{{ asset('img/logo.png') }}" alt="Logo" class="gambar-rs">
-                            <img src="{{ asset('img/it.png') }}" alt="IT Logo" class="gambar-it">
-                        </div>
+            <div class="qr-item">
+                <div class="qr-code">
+                    {!! $item['qrcode'] !!}
+                </div>
+                <div class="aset-info">
+                    <p>{{ $item['aset']->id ?? '-' }}</p>
+                </div>
+                <div class="logos">
+                    <div class="logo-wrapper">
+                        <img src="{{ asset('img/logo.png') }}" alt="Logo" class="gambar-rs">
+                        <img src="{{ asset('img/it.png') }}" alt="IT Logo" class="gambar-it">
                     </div>
                 </div>
+            </div>
             {{-- @endfor --}}
         @endforeach
     </div>

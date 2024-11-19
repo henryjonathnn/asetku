@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('master_kegiatans', function (Blueprint $table) {
             $table->id();
             $table->string('kegiatan');
-            $table->boolean('is_custom')->default(false);
+            $table->boolean('is_custom')->default(true);
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

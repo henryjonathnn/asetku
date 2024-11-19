@@ -26,6 +26,12 @@ Route::middleware('auth')->group(function () {
     ]);
     Route::get('aset/{uuid}/detail', [AsetController::class, 'detail']);
     Route::post('/aset/print-multiple', [BarcodeController::class, 'printBulkQRCodes'])->name('barcode.print-multiple');
+
+    Route::get('/settings', [AuthController::class, 'settings'])->name('settings');
+    Route::put('/profile/update', [AuthController::class, 'updateProfile'])->name('profile.update');
+    Route::post('/users/create', [AuthController::class, 'createUser'])->name('users.create');
+    Route::put('/users/{user}/update', [AuthController::class, 'updateUser'])->name('users.update');
+    Route::delete('/users/{user}/delete', [AuthController::class, 'deleteUser'])->name('users.delete');
 });
 
 Route::get('aset/{uuid}/barcode', [BarcodeController::class, 'generate'])->name('barcode.generate');

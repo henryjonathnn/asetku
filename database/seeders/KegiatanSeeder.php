@@ -14,12 +14,13 @@ class KegiatanSeeder extends Seeder
     public function run(): void
     {
         $opsiKegiatan = [
-            ['kegiatan' => 'Pemeliharaan Rutin', 'is_custom' => false],
-            ['kegiatan' => 'Perbaikan', 'is_custom' => false],
-            ['kegiatan' => 'Penggantian Komponen', 'is_custom' => false],
-            ['kegiatan' => 'Inspeksi', 'is_custom' => false],
-            ['kegiatan' => 'Kalibrasi', 'is_custom' => false],
-            ['kegiatan' => 'Lainnya', 'is_custom' => true], // Opsi untuk input bebas
+            ['kegiatan' => 'Pemeliharaan Rutin'],
+            ['kegiatan' => 'Perbaikan'],
+            ['kegiatan' => 'Penggantian Komponen'],
+            ['kegiatan' => 'Inspeksi'],
+            ['kegiatan' => 'Kalibrasi'],
+            ['kegiatan' => 'Pengisian Tinta'],
+            ['kegiatan' => 'Lainnya'],
         ];
 
         foreach ($opsiKegiatan as $opsi) {

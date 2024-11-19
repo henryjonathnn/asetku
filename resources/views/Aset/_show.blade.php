@@ -2,7 +2,7 @@
     <!-- Asset Information Card -->
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-light py-3">
-            <h6 class="mb-0 fw-bold text-primary">Informasi Aset ID {{ $aset->id }}</h6>
+            <h6 class="mb-0 fw-bold text-primary">Informasi Aset ({{ $aset->id }})</h6>
         </div>
         <div class="card-body">
             <div class="row g-4">
@@ -92,7 +92,7 @@
                             </div>
                             <div>
                                 <small class="text-muted d-block">Tanggal Dibuat</small>
-                                <strong>{{ $aset->created_at ?? ($aset->updated_at ?? '-') }}</strong>
+                                <strong>{{ $aset->created_at->format('d M Y') ?? ($aset->updated_at ?? '-') }}</strong>
                             </div>
                         </div>
                         <div class="d-flex align-items-center">
@@ -148,9 +148,10 @@
                                 <td class="align-middle">{{ $k->created_at->format('d-m-Y') }}</td>
                                 <td class="align-middle">
                                     @if ($k->masterKegiatan->is_custom)
-                                        {{ $k->custom_kegiatan ?? '-' }}
+                                        <span class="d-block fw-medium">{{ $k->masterKegiatan->kegiatan }}</span>
+                                        <small class="text-muted">{{ $k->note }}</small>
                                     @else
-                                        {{ $k->masterKegiatan->kegiatan }}
+                                        <span class="fw-medium">{{ $k->masterKegiatan->kegiatan }}</span>
                                     @endif
                                 </td>
                                 <td class="align-middle">{{ $k->user->name }}</td>
@@ -158,7 +159,7 @@
                                     @if ($k->foto)
                                         <button type="button" class="btn btn-sm btn-primary view-photo"
                                             data-photo="{{ asset('storage/' . $k->foto) }}">
-                                            <i class="fas fa-image me-1"></i>Lihat Foto
+                                            Lihat
                                         </button>
                                     @else
                                         <span class="text-muted">-</span>

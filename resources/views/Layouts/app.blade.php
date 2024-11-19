@@ -28,13 +28,13 @@
         .navbar {
             background-color: #00813f;
             padding: 0;
-            height: 70px;
+            height: 80px;
             /* Increased height */
         }
 
         .navbar-container {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
             width: 100%;
             height: 100%;
@@ -58,15 +58,14 @@
         }
 
         .logo-container {
-            height: 55px;
+            height: 65px;
             /* Adjusted height */
-            width: 55px;
+            width: 65px;
             /* Added width to maintain aspect ratio */
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0;
-            padding: 6px;
             background-color: white;
             border-radius: 50%;
             box-shadow: 0 0 0 2px white;
@@ -105,14 +104,14 @@
             /* Increased gap */
             color: white;
             font-size: 0.85rem;
-            /* Increased font size */
-            margin-left: 25px;
+            margin: 0 25px;
         }
 
         .contact-info-item {
             display: flex;
             align-items: center;
             gap: 8px;
+            margin: 0 6px;
             /* Increased gap */
             white-space: nowrap;
         }
@@ -199,11 +198,11 @@
                         </div>
                         <div class="contact-info-item">
                             <i class="fas fa-phone"></i>
-                            <span>(0354) 771062</span>
+                            <span>(WA) 0857-1085-6584</span>
                         </div>
                         <div class="contact-info-item">
-                            <i class="fas fa-envelope"></i>
-                            <span>dahahusada@jatimprov.go.id</span>
+                            <i class="fas fa-globe"></i>
+                            <a class="text-white" href="https://rsuddahahusada.jatimprov.go.id/" target="_blank">dahahusada@jatimprov.go.id</a>
                         </div>
                     </div>
                 </div>
@@ -215,7 +214,7 @@
                                 <i class="fas fa-user"></i> {{ Auth::user()->name ?? 'User' }}
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="#"><i class="fas fa-cog"></i> Pengaturan</a>
+                                <li><a class="dropdown-item" href={{route('settings')}}><i class="fas fa-cog"></i> Pengaturan</a>
                                 </li>
                                 <li>
                                     <hr class="dropdown-divider">
