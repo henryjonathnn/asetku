@@ -148,6 +148,15 @@ class KegiatanController extends Controller
         }
     }
 
+    public function destroy(string $uuid, string $kegiatan)
+    {
+        $kegiatan = Kegiatan::where('id', $kegiatan)->where('id_aset', $uuid)->firstOrFail();
+        $kegiatan->delete();
+
+        return response()->json(['message' => 'Data berhasil dihapus.'], 200);
+    }
+
+
 
 
     public function validateUser(Request $request)

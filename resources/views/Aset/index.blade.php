@@ -105,8 +105,8 @@
                                                 <i class="fas fa-box text-primary"></i>
                                             </div>
                                             <div>
-                                                <span class="d-block fw-medium">{{ $item->nama_barang}}</span>
-                                                <small class="text-muted">SN: {{ $item->serial_number}}</small>
+                                                <span class="d-block fw-medium">{{ $item->nama_barang }}</span>
+                                                <small class="text-muted">SN: {{ $item->serial_number }}</small>
                                             </div>
                                         </div>
                                     </td>
@@ -115,7 +115,7 @@
                                             <div class="bg-light rounded-circle p-1">
                                                 <i class="fas fa-user text-primary"></i>
                                             </div>
-                                            <span>{{ $item->pengguna ?? '-'}}</span>
+                                            <span>{{ $item->pengguna ?? '-' }}</span>
                                         </div>
                                     </td>
                                     <td>
@@ -565,20 +565,50 @@
                 }
             }
 
-            // Sweet Alert confirmation
-            function confirmDelete(id) {
+            function confirmDelete(url) {
                 Swal.fire({
-                    title: 'Hapus Aset?',
+                    title: 'Apakah Anda yakin?',
                     text: "Data yang dihapus tidak dapat dikembalikan!",
                     icon: 'warning',
                     showCancelButton: true,
-                    confirmButtonColor: '#dc3545',
-                    cancelButtonColor: '#6c757d',
-                    confirmButtonText: 'Ya, Hapus!',
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, hapus!',
                     cancelButtonText: 'Batal'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        window.location.href = `/aset/${id}/delete`;
+                        fetch(url, {
+                                method: 'DELETE',
+                                headers: {
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                                        'content')
+                                }
+                            })
+                            .then(response => {
+                                if (response.ok) {
+                                    Swal.fire(
+                                        'Terhapus!',
+                                        'Data berhasil dihapus.',
+                                        'success'
+                                    ).then(() => {
+                                        location.reload(); // Segarkan halaman
+                                    });
+                                } else {
+                                    Swal.fire(
+                                        'Gagal!',
+                                        'Data tidak dapat dihapus.',
+                                        'error'
+                                    );
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                Swal.fire(
+                                    'Kesalahan!',
+                                    'Terjadi kesalahan saat menghapus data.',
+                                    'error'
+                                );
+                            });
                     }
                 });
             }

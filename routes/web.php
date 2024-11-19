@@ -34,6 +34,7 @@ Route::get('aset/{uuid}/barcode', [BarcodeController::class, 'generate'])->name(
 Route::get('aset/{uuid}/kegiatan', [KegiatanController::class, 'index'])->name('kegiatan.index');
 Route::post('aset/{uuid}/kegiatan', [KegiatanController::class, 'store'])->name('kegiatan.store');
 Route::put('aset/{uuid}/kegiatan/update-master', [KegiatanController::class, 'updateMaster'])->name('kegiatan.update-master');
+Route::delete('aset/{uuid}/kegiatan/{kegiatan}', [KegiatanController::class, 'destroy'])->name('kegiatan.destroy');
 
 // AUTH
 Route::get('/login', [AuthController::class, 'loginForm']);

@@ -138,6 +138,7 @@
                             <th>Kegiatan</th>
                             <th>Petugas</th>
                             <th>Foto</th>
+                            <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -162,6 +163,11 @@
                                     @else
                                         <span class="text-muted">-</span>
                                     @endif
+                                </td>
+                                <td class="align-middle">
+                                    <button
+                                        onclick="confirmDelete('{{ route('kegiatan.destroy', ['uuid' => $aset->id, 'kegiatan' => $k->id]) }}')"
+                                        class="btn btn-danger btn-sm">Hapus</button>
                                 </td>
                             </tr>
                         @empty
