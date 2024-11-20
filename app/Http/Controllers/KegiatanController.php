@@ -153,7 +153,7 @@ class KegiatanController extends Controller
         $kegiatan = Kegiatan::where('id', $kegiatan)->where('id_aset', $uuid)->firstOrFail();
         $kegiatan->delete();
 
-        return response()->json(['message' => 'Data berhasil dihapus.'], 200);
+        return redirect()->route('aset.index')->with('success', 'Data kegiatan berhasil dihapus');;
     }
 
 

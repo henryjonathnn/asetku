@@ -16,8 +16,8 @@ class AsetController extends Controller
         // Tetap menggunakan all() untuk kemudahan development
         $aset = Aset::with(['kepemilikan', 'kegiatan'])->paginate(10);
 
-        $kepemilikan = Kepemilikan::all();
-        $jenis = Jenis::all();
+        $kepemilikan = Kepemilikan::active()->get();
+        $jenis = Jenis::active()->get();
         $kegiatan = Kegiatan::all();
 
         return view('aset.index', compact('aset', 'kepemilikan', 'jenis', 'kegiatan'));
@@ -107,8 +107,8 @@ class AsetController extends Controller
             'id_kepemilikan'
         ])->findOrFail($uuid);
 
-        $kepemilikan = Kepemilikan::select('id', 'kepemilikan')->get();
-        $jenis = Jenis::all();
+        $kepemilikan = Kepemilikan::active()->select('id', 'kepemilikan')->get();
+        $jenis = Jenis::active()->get();
 
         if (request()->ajax()) {
             return response()->json([

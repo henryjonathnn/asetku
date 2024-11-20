@@ -111,15 +111,14 @@
                                             <td>
                                                 <button class="btn btn-sm btn-warning" data-bs-toggle="modal"
                                                     data-bs-target="#editUserModal{{ $user->id }}">
-                                                    Edit
+                                                    <i class="fas fa-pencil"></i>
                                                 </button>
                                                 <form action="{{ route('users.delete', $user) }}" method="POST"
                                                     class="d-inline">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-danger"
-                                                        onclick="return confirm('Yakin ingin menghapus user ini?')">
-                                                        Hapus
+                                                    <button type="button" onclick="confirmDelete('{{ route('users.delete', $user) }}', 'users')" class="btn btn-sm btn-danger">
+                                                        <i class="fas fa-trash"></i>
                                                     </button>
                                                 </form>
                                             </td>

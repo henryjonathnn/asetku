@@ -4,6 +4,7 @@ use App\Http\Controllers\AsetController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BarcodeController;
 use App\Http\Controllers\KegiatanController;
+use App\Http\Controllers\MasterController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,18 +21,26 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+// ASET
 Route::middleware('auth')->group(function () {
     Route::resource('aset', AsetController::class)->parameters([
         'aset' => 'uuid'
     ]);
+
+    // BARCODE
     Route::get('aset/{uuid}/detail', [AsetController::class, 'detail']);
     Route::post('/aset/print-multiple', [BarcodeController::class, 'printBulkQRCodes'])->name('barcode.print-multiple');
 
+    // PROFILE / SETTINGS
     Route::get('/settings', [AuthController::class, 'settings'])->name('settings');
     Route::put('/profile/update', [AuthController::class, 'updateProfile'])->name('profile.update');
     Route::post('/users/create', [AuthController::class, 'createUser'])->name('users.create');
     Route::put('/users/{user}/update', [AuthController::class, 'updateUser'])->name('users.update');
     Route::delete('/users/{user}/delete', [AuthController::class, 'deleteUser'])->name('users.delete');
+
+    // MASTER
+    Route::resource('master', MasterController::class);
 });
 
 Route::get('aset/{uuid}/barcode', [BarcodeController::class, 'generate'])->name('barcode.generate');

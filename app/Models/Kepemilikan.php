@@ -9,7 +9,7 @@ class Kepemilikan extends Model
 {
     use HasFactory;
 
-    protected $table = 'kepemilikans';
+    // protected $table = 'kepemilikans';
 
     protected $fillable = ['kepemilikan', 'is_active'];
 
@@ -21,5 +21,11 @@ class Kepemilikan extends Model
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
+    }
+
+    public function getActiveKepemilikan()
+    {
+        $activeKepemilikan = Kepemilikan::active()->get();
+        return response()->json($activeKepemilikan);
     }
 }

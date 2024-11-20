@@ -9,8 +9,6 @@ class Jenis extends Model
 {
     use HasFactory;
 
-    protected $table = 'jenis';
-    
     protected $fillable = ['jenis', 'is_active'];
 
     public function aset()
@@ -21,5 +19,11 @@ class Jenis extends Model
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
+    }
+
+    public function getActiveJenis()
+    {
+        $activeJenis = Jenis::active()->get();
+        return response()->json($activeJenis);
     }
 }

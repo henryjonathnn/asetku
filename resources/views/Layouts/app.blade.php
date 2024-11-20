@@ -202,7 +202,8 @@
                         </div>
                         <div class="contact-info-item">
                             <i class="fas fa-globe"></i>
-                            <a class="text-white" href="https://rsuddahahusada.jatimprov.go.id/" target="_blank">dahahusada@jatimprov.go.id</a>
+                            <a class="text-white" href="https://rsuddahahusada.jatimprov.go.id/"
+                                target="_blank">dahahusada@jatimprov.go.id</a>
                         </div>
                     </div>
                 </div>
@@ -214,7 +215,15 @@
                                 <i class="fas fa-user"></i> {{ Auth::user()->name ?? 'User' }}
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href={{route('settings')}}><i class="fas fa-cog"></i> Pengaturan</a>
+                                <li><a class="dropdown-item" href={{ route('settings') }}><i class="fas fa-cog"></i>
+                                        Pengaturan</a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item" href={{ route('master.index') }}><i
+                                            class="fas fa-server"></i>
+                                        Data Master</a>
                                 </li>
                                 <li>
                                     <hr class="dropdown-divider">
@@ -272,6 +281,51 @@
                 showConfirmButton: false
             });
         @endif
+
+        function confirmDelete(url, type) {
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: 'Data yang dihapus tidak dapat dikembalikan!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Create form element
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = url;
+
+                    // Add CSRF token
+                    const csrfToken = document.createElement('input');
+                    csrfToken.type = 'hidden';
+                    csrfToken.name = '_token';
+                    csrfToken.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                    form.appendChild(csrfToken);
+
+                    // Add method DELETE
+                    const methodField = document.createElement('input');
+                    methodField.type = 'hidden';
+                    methodField.name = '_method';
+                    methodField.value = 'DELETE';
+                    form.appendChild(methodField);
+
+                    // Add type field
+                    const typeField = document.createElement('input');
+                    typeField.type = 'hidden';
+                    typeField.name = 'type';
+                    typeField.value = type;
+                    form.appendChild(typeField);
+
+                    // Append form to body and submit
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
+        }
 
         // Add CSRF token to all AJAX requests
         $.ajaxSetup({
