@@ -1,5 +1,4 @@
 <?php
-// app/Http/Controllers/MasterController.php
 
 namespace App\Http\Controllers;
 

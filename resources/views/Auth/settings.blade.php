@@ -1,4 +1,4 @@
-<!-- resources/views/auth/settings.blade.php -->
+
 @extends('layouts.app')
 
 @section('content')
@@ -47,7 +47,7 @@
 
                 <!-- Profile Settings -->
                 <div class="card mb-4">
-                    <div class="card-header">
+                    <div class="card-header bg-white">
                         <h5 class="card-title mb-0">Pengaturan Profil</h5>
                     </div>
                     <div class="card-body">
@@ -87,10 +87,10 @@
 
                 <!-- User Management -->
                 <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
                         <h5 class="card-title mb-0">Manajemen Petugas</h5>
-                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addUserModal">
-                            Tambah Petugas
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                            <i class="fas fa-plus"></i> Tambah Petugas
                         </button>
                     </div>
                     <div class="card-body">

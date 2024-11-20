@@ -13,7 +13,7 @@ class AsetController extends Controller
 {
     public function index()
     {
-        // Tetap menggunakan all() untuk kemudahan development
+
         $aset = Aset::with(['kepemilikan', 'kegiatan'])->paginate(10);
 
         $kepemilikan = Kepemilikan::active()->get();
@@ -23,7 +23,7 @@ class AsetController extends Controller
         return view('aset.index', compact('aset', 'kepemilikan', 'jenis', 'kegiatan'));
     }
 
-    // Optimasi khusus untuk modal/detail view
+ 
     public function detail(string $uuid)
     {
         $aset = Aset::select([
@@ -92,7 +92,7 @@ class AsetController extends Controller
 
     public function edit($uuid)
     {
-        // Optimasi untuk modal edit
+
         $aset = Aset::select([
             'id',
             'nama_barang',

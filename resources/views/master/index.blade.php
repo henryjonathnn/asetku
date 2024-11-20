@@ -1,9 +1,14 @@
-{{-- resources/views/master/index.blade.php --}}
+
 @extends('layouts.app')
 
 @section('content')
     <div class="container py-4">
         <div class="row justify-content-center">
+            <div class="col-12">
+                <a href="{{route('aset.index')}}" class="btn btn-primary mb-3">
+                    <i class="fas fa-arrow-left"></i> Kembali
+                </a>
+            </div>
             <div class="col-md-12">
                 <div class="card shadow-sm">
                     <div class="card-header bg-white">

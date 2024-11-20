@@ -21,7 +21,7 @@ class KegiatanController extends Controller
      */
     public function index($uuid)
     {
-        $aset = Aset::findOrFail($uuid); // Ensure the UUID is correctly passed
+        $aset = Aset::findOrFail($uuid);
         $kegiatan = Kegiatan::with(['masterKegiatan', 'user'])
             ->where('id_aset', $aset->id)->latest('created_at')->paginate(10);
         $masterKegiatan = MasterKegiatan::all();
@@ -37,10 +37,9 @@ class KegiatanController extends Controller
             $file = $request->file($fieldName);
             $fileName = time() . '_' . $file->getClientOriginalName();
 
-            // Store the file in the specified directory
+            // masuk ke directory folder khusus sesuai namanya
             $path = $file->storeAs("public/{$directory}", $fileName);
 
-            // Return the relative path for database storage
             return str_replace('public/', '', $path);
         }
 
@@ -70,7 +69,7 @@ class KegiatanController extends Controller
 
         $masterKegiatan = MasterKegiatan::findOrFail($request->id_master_kegiatan);
 
-        // Handle file upload
+        // Handle upload
         $fotoPath = null;
         if ($request->hasFile('foto')) {
             $file = $request->file('foto');
@@ -92,7 +91,7 @@ class KegiatanController extends Controller
 
     public function updateMaster(Request $request, $uuid)
     {
-        // Validate request
+        // Validasi req
         $validatedData = $request->validate([
             'username' => 'required|string',
             'password' => 'required|string',
@@ -108,7 +107,7 @@ class KegiatanController extends Controller
             'spek' => 'required',
         ]);
 
-        // Verify credentials
+        // Verif kredensial
         $user = User::where('username', $request->username)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
@@ -118,25 +117,24 @@ class KegiatanController extends Controller
         }
 
         try {
-            // Remove credentials from validatedData
+
             unset($validatedData['username']);
             unset($validatedData['password']);
 
-            // Find the asset
+         
             $aset = Aset::findOrFail($uuid);
 
-            // Handle file upload
+            // Handle upload
             if ($request->hasFile('foto')) {
-                // Delete old photo if exists
+                // Hapus foto lama jika ada
                 if ($aset->foto && Storage::exists('public/' . $aset->foto)) {
                     Storage::delete('public/' . $aset->foto);
                 }
 
-                // Upload new photo
+                // Upload foto baru
                 $validatedData['foto'] = $this->handleFileUpload($request, 'foto', 'aset');
             }
 
-            // Update the asset
             $aset->update($validatedData);
 
             return redirect()->route('kegiatan.index', ['uuid' => $aset->id])

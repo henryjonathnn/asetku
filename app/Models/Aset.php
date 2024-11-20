@@ -29,7 +29,7 @@ class Aset extends Model
         'updated_at' => 'datetime',
     ];
 
-    // Define relationship with eager loading constraints
+    
     public function kepemilikan()
     {
         return $this->belongsTo(Kepemilikan::class, 'id_kepemilikan')

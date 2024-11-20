@@ -11,10 +11,9 @@ class BarcodeController extends Controller
 {
     private function generateQRCode($uuid, $width = 4, $height = 4)
     {
-        // Generate URL directly to the kegiatan route without signing
         $url = route('kegiatan.index', ['uuid' => $uuid]);
 
-        // Generate QR code with consistent settings
+
         return [
             'qrcode' => DNS2DFacade::getBarcodeSVG($url, 'QRCODE', $width, $height),
             'url' => $url
@@ -45,7 +44,7 @@ class BarcodeController extends Controller
 
         foreach ($asetIds as $uuid) {
             $aset = Aset::findOrFail($uuid);
-            // Use same size as modal for consistency
+
             $qrData = $this->generateQRCode($aset->id, 4, 4);
 
             $asetsWithQR[] = [

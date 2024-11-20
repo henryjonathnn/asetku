@@ -87,7 +87,6 @@ class AuthController extends Controller
             'password' => 'required|min:6',
         ]);
 
-        // Tambahkan logging untuk memeriksa data yang diterima
         Log::info('Request data:', $request->all());
 
         try {
