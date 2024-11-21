@@ -13,28 +13,51 @@
         .qr-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            padding: 4px;
+            gap: 20px;
+            /* Menambah jarak antar elemen */
+            padding: 20px;
+            /* Menambah jarak tepi */
+            justify-content: center;
         }
 
         .qr-item {
             border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
+            padding: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            height: auto;
-            width: auto;
+            gap: 2px;
+            width: 120px;
+            /* Set a fixed width */
+            height: 120px;
+            /* Set a fixed height to match the width */
+            justify-content: center;
         }
 
+
         .qr-code {
-            width: 150px;
-            height: 150px;
-            margin-left: 20px;
+            width: 80px;
+            height: 80px;
+            flex-shrink: 0;
+        }
+
+        .qr-content {
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
+            margin-bottom: -20px;
+        }
+
+        .aset-info {
+            margin-top: 0;
+            text-align: left;
+            flex-grow: 1;
+        }
+
+        .aset-info p {
+            margin: 0;
+            font-size: 11px;
+            word-break: break-all;
         }
 
         .qr-code svg {
@@ -45,23 +68,11 @@
             margin: 0 !important;
         }
 
-        .aset-info {
-            margin-top: 2px;
-            text-align: center;
-            width: 100%;
-        }
-
-        .aset-info p {
-            margin: 2px 0;
-            font-size: 11px;
-            word-break: break-all;
-        }
 
         .logos {
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-top: 4px;
             gap: 8px;
         }
 
@@ -72,12 +83,12 @@
         }
 
         .gambar-rs {
-            height: 80px;
+            height: 55px;
             width: auto;
         }
 
         .gambar-it {
-            height: 40px;
+            height: 28px;
             width: auto;
             margin-left: 8px;
             margin-bottom: -6px;
@@ -102,6 +113,8 @@
             color: white;
         }
 
+
+        /* Print styles */
         /* Print styles */
         @page {
             size: A4;
@@ -112,6 +125,7 @@
             body {
                 padding: 0;
                 margin: 0;
+                font-family: Arial, sans-serif;
             }
 
             .print-controls {
@@ -119,47 +133,69 @@
             }
 
             .qr-grid {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                /* Ensure same column layout */
                 gap: 10px;
+                /* Adjust spacing for print */
+                padding: 1px;
             }
 
             .qr-item {
                 break-inside: avoid;
                 page-break-inside: avoid;
-                margin-left: 25px;
+                margin-top: 20px;
+                padding: 10px;
+                /* Uniform padding */
                 display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 110px;
+                /* Fixed width for consistency */
+                height: 110px;
+                /* Fixed height for consistency */
+                border: 1px solid #ddd;
             }
 
             .qr-code svg {
-                margin: 0 !important;
+                width: 80px !important;
+                height: 80px !important;
             }
 
-            .qr-code,
-            .aset-info {
-                margin: inherit;
-            }
-
-            .logos {
-                margin: 0, auto;
-            }
-
-            .logo-wrapper {
-                height: 60px;
-            }
-
-            .gambar-rs {
-                height: 70px;
-            }
-
-            .gambar-it {
-                height: 35px;
+            .qr-content {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: -20px;
             }
 
             .aset-info p {
                 font-size: 8px;
                 text-align: center;
-                display: flex;
+                margin: 0;
             }
 
+            .logos {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 8px;
+                margin: 0 auto;
+            }
+
+            .logo-wrapper {
+                display: flex;
+                align-items: center;
+                height: 60px;
+            }
+
+            .gambar-rs {
+                height: 40px;
+            }
+
+            .gambar-it {
+                height: 20px;
+            }
         }
     </style>
 </head>
@@ -172,13 +208,14 @@
 
     <div class="qr-grid">
         @foreach ($asetsWithQR as $item)
-            {{-- @for ($u = 0; $u < 5; $u++) --}}
             <div class="qr-item">
-                <div class="qr-code">
-                    {!! $item['qrcode'] !!}
-                </div>
-                <div class="aset-info">
-                    <p>{{ $item['aset']->id ?? '-' }}</p>
+                <div class="qr-content">
+                    <div class="qr-code">
+                        {!! $item['qrcode'] !!}
+                    </div>
+                    <div class="aset-info">
+                        <p>{{ Str::afterLast($item['aset']->id, '-') }}</p>
+                    </div>
                 </div>
                 <div class="logos">
                     <div class="logo-wrapper">
@@ -187,7 +224,6 @@
                     </div>
                 </div>
             </div>
-            {{-- @endfor --}}
         @endforeach
     </div>
 

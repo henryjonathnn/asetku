@@ -138,7 +138,8 @@
                                             </div>
                                             <div>
                                                 @if ($k->masterKegiatan->is_custom)
-                                                    <span class="d-block fw-medium">{{$k->masterKegiatan->kegiatan}}</span>
+                                                    <span
+                                                        class="d-block fw-medium">{{ $k->masterKegiatan->kegiatan }}</span>
                                                     <small class="text-muted">{{ $k->note }}</small>
                                                 @else
                                                     <span class="fw-medium">{{ $k->masterKegiatan->kegiatan }}</span>
@@ -262,8 +263,8 @@
                             </div>
                             <div class="col-12" id="customKegiatanDiv">
                                 <div class="form-floating">
-                                    <textarea class="form-control @error('note') is-invalid @enderror" id="note"
-                                        name="note" style="height: 100px" placeholder="Deskripsi Kegiatan"></textarea>
+                                    <textarea class="form-control @error('note') is-invalid @enderror" id="note" name="note"
+                                        style="height: 100px" placeholder="Deskripsi Kegiatan"></textarea>
                                     <label for="note">Deskripsi Kegiatan</label>
                                     @error('note')
                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -377,18 +378,21 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="number" name="tahun_kepemilikan" class="form-control"
-                                        id="tahun_kepemilikan" value="{{ $aset->tahun_kepemilikan }}"
-                                        placeholder="Tahun Kepemilikan" required>
-                                    <label for="tahun_kepemilikan">Tahun Kepemilikan</label>
+                                <div class="form-floating position-relative">
+                                    <input type="text" name="tahun_kepemilikan" class="form-control year-picker"
+                                        id="editahun" placeholder="Tahun" readonly data-bs-toggle="modal"
+                                        data-bs-target="#yearSelectorModal" value="{{ $aset->tahun_kepemilikan }}">
+                                    <label for="editTahun">Tahun Kepemilikan</label>
+                                    <i
+                                        class="fas fa-calendar position-absolute end-0 top-50 translate-middle-y me-3 text-muted"></i>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating">
                                     <select name="status" class="form-select" id="editStatus">
-                                        @foreach(App\Models\Aset::getStatusOptions() as $value => $label)
-                                            <option value="{{ $value }}" {{ $aset->status == $value ? 'selected' : '' }}>
+                                        @foreach (App\Models\Aset::getStatusOptions() as $value => $label)
+                                            <option value="{{ $value }}"
+                                                {{ $aset->status == $value ? 'selected' : '' }}>
                                                 {{ $label }}
                                             </option>
                                         @endforeach
@@ -431,6 +435,30 @@
         </div>
     </div>
 
+    <!-- Year Selector Modal -->
+    <div class="modal fade" id="yearSelectorModal" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title">Pilih Tahun</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="year-selector">
+                        <div class="year-navigation d-flex justify-content-between align-items-center mb-3">
+                            <button class="btn btn-sm btn-outline-secondary navigate-years" data-direction="prev">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <span class="year-range fw-bold"></span>
+                            <button class="btn btn-sm btn-outline-secondary navigate-years" data-direction="next">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                        <div class="years-grid row g-2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
     @push('scripts')

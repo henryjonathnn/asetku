@@ -203,7 +203,7 @@
                         <div class="contact-info-item">
                             <i class="fas fa-globe"></i>
                             <a class="text-white" href="https://rsuddahahusada.jatimprov.go.id/"
-                                target="_blank">dahahusada@jatimprov.go.id</a>
+                            target="_blank">rsuddahahusada.jatimprov.go.id</a>
                         </div>
                     </div>
                 </div>

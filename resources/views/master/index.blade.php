@@ -87,10 +87,6 @@
                                                     data-bs-target="#editModal{{ $item->id }}">
                                                     <i class="fas fa-pencil-alt"></i>
                                                 </button>
-                                                <button type="button" class="btn btn-sm btn-danger"
-                                                    onclick="confirmDelete('{{ route('master.destroy', $item->id) }}', '{{ $type }}')">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
                                             </td>
                                         </tr>
                                     @endforeach

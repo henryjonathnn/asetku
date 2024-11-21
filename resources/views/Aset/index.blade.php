@@ -1,4 +1,3 @@
-
 @extends('layouts.app')
 
 @section('content')
@@ -94,7 +93,10 @@
                                         <span class="fw-medium">{{ $loop->iteration ?? '-' }}</span>
                                     </td>
                                     <td>
-                                        <span class="fw-medium">{{ $item->nomor_aset ?? '-' }}</span>
+                                        <div>
+                                            <span class="d-block fw-medium">{{ $item->nomor_aset ?? '-' }}</span>
+                                            <small class="text-muted">ID: {{ Str::afterLast($item->id, '-') }}</small>
+                                        </div>
                                     </td>
                                     <td>
                                         <span class="badge bg-light text-dark">{{ $item->jenis->jenis ?? '-' }}</span>
@@ -253,11 +255,17 @@
                                 <div class="row g-3">
                                     <div class="col-md-4">
                                         <div class="form-floating">
-                                            <input type="number" name="tahun_kepemilikan" class="form-control"
-                                                id="createTahun" placeholder="Tahun">
+                                            <input type="number" id="createTahun" name="tahun_kepemilikan"
+                                                class="form-control" data-bs-toggle="modal"
+                                                data-bs-target="#yearSelectorModal" value="{{ now()->year }}" readonly>
                                             <label for="createTahun">Tahun Kepemilikan</label>
                                         </div>
                                     </div>
+                                    {{-- <button class="btn btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#yearSelectorModal">
+                                        Pilih Tahun
+                                    </button> --}}
+
                                     <div class="col-md-4">
                                         <div class="form-floating">
                                             <input type="text" name="pengguna" class="form-control"
@@ -288,6 +296,36 @@
                     </div>
                 </form>
 
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="yearSelectorModal" tabindex="-1" aria-labelledby="yearSelectorModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="yearSelectorModalLabel">Pilih Tahun</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Navigasi Tahun -->
+                    <div class="d-flex justify-content-between mb-3">
+                        <button class="btn btn-outline-secondary" id="prevYearRange">←</button>
+                        <span id="yearRange" class="fw-bold">2017 - 2032</span>
+                        <button class="btn btn-outline-secondary" id="nextYearRange">→</button>
+                    </div>
+
+                    <!-- Grid Tahun -->
+                    <div class="row row-cols-4 g-2" id="yearGrid">
+                        <!-- Tahun akan dimasukkan di sini dengan JS -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    <button type="button" hidden class="btn btn-primary" id="selectYearBtn"
+                        data-bs-dismiss="modal">Pilih</button>
+                </div>
             </div>
         </div>
     </div>
@@ -356,7 +394,6 @@
             // Main initialization
             // Main initialization
             document.addEventListener('DOMContentLoaded', function() {
-                // Cache DOM elements
                 const elements = {
                     selectAll: document.getElementById('selectAll'),
                     asetCheckboxes: document.querySelectorAll('.aset-checkbox'),
@@ -370,7 +407,65 @@
                     fileInput: document.querySelector('#foto')
                 };
 
-                // Initialize event listeners
+                const yearGrid = document.getElementById("yearGrid");
+                const yearRange = document.getElementById("yearRange");
+                const selectYearBtn = document.getElementById("selectYearBtn");
+                const tahunInput = document.getElementById("createTahun");
+                let startYear = 2017;
+                let endYear = 2032;
+                let selectedYear = 2024; // Default selected year
+
+                // Fungsi untuk generate grid tahun
+                function generateYearGrid() {
+                    yearGrid.innerHTML = ''; // Clear grid
+                    for (let year = startYear; year <= endYear; year++) {
+                        const yearButton = document.createElement('button');
+                        yearButton.classList.add('btn', 'btn-outline-primary', 'col-3');
+                        yearButton.textContent = year;
+                        if (year === selectedYear) {
+                            yearButton.classList.add('btn-primary', 'text-white');
+                        }
+                        yearButton.addEventListener('click', function() {
+                            selectedYear = year;
+                            tahunInput.value = selectedYear; // Display the selected year in the input field
+
+                            // Close the year selector modal
+                            const yearSelectorModal = bootstrap.Modal.getInstance(document.getElementById(
+                                'yearSelectorModal'));
+                            yearSelectorModal.hide();
+
+                            // Open the create asset modal
+                            const createAsetModal = new bootstrap.Modal(document.getElementById(
+                                'createAsetModal'));
+                            createAsetModal.show();
+                        });
+                        yearGrid.appendChild(yearButton);
+                    }
+                    yearRange.textContent = `${startYear} - ${endYear}`;
+                }
+
+                // Tombol Navigasi Rentang Tahun
+                document.getElementById("prevYearRange").addEventListener("click", function() {
+                    startYear -= 16;
+                    endYear -= 16;
+                    generateYearGrid();
+                });
+
+                document.getElementById("nextYearRange").addEventListener("click", function() {
+                    startYear += 16;
+                    endYear += 16;
+                    generateYearGrid();
+                });
+
+                // Event Listener untuk tombol "Pilih" pada modal
+                selectYearBtn.addEventListener('click', function() {
+                    tahunInput.value = selectedYear; // Set value in input with selected year
+                });
+
+                // Inisialisasi grid tahun pertama
+                generateYearGrid();
+
+                // Initialize other handlers (e.g., photo handling, checkbox handling)
                 initializePhotoHandlers();
                 initializeCheckboxHandlers();
                 initializeModalHandlers();

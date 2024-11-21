@@ -1,3 +1,4 @@
+{{-- _edit.blade.php --}}
 <form action="{{ route('aset.update', ['uuid' => $aset->id]) }}" method="POST"
     class="p-4">
     @csrf
@@ -39,20 +40,20 @@
                     <div class="col-md-4">
                         <div class="form-floating">
                             <input type="text" name="nomor_aset" class="form-control" id="editNomorAset"
-                                value="{{ $aset->nomor_aset }}" placeholder="Nomor Aset">
+                                value="{{ $aset->nomor_aset }}" required placeholder="Nomor Aset">
                             <label for="editNomorAset">Nomor Aset</label>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-floating">
                             <input type="text" name="serial_number" class="form-control" id="editSerialNumber"
-                                value="{{ $aset->serial_number }}" placeholder="Serial Number">
+                                value="{{ $aset->serial_number }}" required placeholder="Serial Number">
                             <label for="editSerialNumber">Serial Number</label>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-floating">
-                            <input type="text" name="part_number" class="form-control" id="editPartNumber"
+                            <input type="text" name="part_number" required class="form-control" id="editPartNumber"
                                 value="{{ $aset->part_number }}" placeholder="Part Number">
                             <label for="editPartNumber">Part Number</label>
                         </div>
@@ -66,13 +67,13 @@
                 <div class="row g-3">
                     <div class="col-md-8">
                         <div class="form-floating">
-                            <textarea name="spek" class="form-control" id="editSpek" style="height: 100px" placeholder="Spesifikasi">{{ $aset->spek }}</textarea>
+                            <textarea name="spek" class="form-control" id="editSpek" style="height: 100px" required placeholder="Spesifikasi">{{ $aset->spek }}</textarea>
                             <label for="editSpek">Spesifikasi</label>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-floating">
-                            <select name="status" class="form-select" id="editStatus">
+                            <select name="status" required class="form-select" id="editStatus">
                                 @foreach(App\Models\Aset::getStatusOptions() as $value => $label)
                                     <option value="{{ $value }}" {{ $aset->status == $value ? 'selected' : '' }}>
                                         {{ $label }}

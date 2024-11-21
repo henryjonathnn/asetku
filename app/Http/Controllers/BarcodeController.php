@@ -23,8 +23,8 @@ class BarcodeController extends Controller
     public function generate($uuid)
     {
         $aset = Aset::findOrFail($uuid);
-        $width = 4;
-        $height = 4;
+        $width = 2;
+        $height = 2;
 
         $qrData = $this->generateQRCode($aset->id, $width, $height);
 
@@ -45,7 +45,7 @@ class BarcodeController extends Controller
         foreach ($asetIds as $uuid) {
             $aset = Aset::findOrFail($uuid);
 
-            $qrData = $this->generateQRCode($aset->id, 4, 4);
+            $qrData = $this->generateQRCode($aset->id, 2, 2);
 
             $asetsWithQR[] = [
                 'aset' => $aset,

@@ -85,28 +85,4 @@ class MasterController extends Controller
 
         return redirect()->route('master.index', ['type' => $type])->with('success', $message);
     }
-
-    public function destroy(Request $request, $id)
-    {
-        $type = $request->type;
-        
-        if ($type === 'jenis') {
-            $item = Jenis::findOrFail($id);
-            if ($item->aset()->exists()) {
-                return redirect()->route('master.index', ['type' => $type])
-                    ->with('error', 'Tidak dapat menghapus jenis yang masih memiliki aset terkait');
-            }
-        } else if ($type === 'kepemilikan') {
-            $item = Kepemilikan::findOrFail($id);
-            if ($item->aset()->exists()) {
-                return redirect()->route('master.index', ['type' => $type])
-                    ->with('error', 'Tidak dapat menghapus kepemilikan yang masih memiliki aset terkait');
-            }
-        }
-        
-        $item->delete();
-        $message = $type === 'jenis' ? 'Data jenis berhasil dihapus' : 'Data kepemilikan berhasil dihapus';
-        
-        return redirect()->route('master.index', ['type' => $type])->with('success', $message);
-    }
 }
