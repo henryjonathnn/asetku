@@ -18,15 +18,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
 // ASET
 Route::middleware('auth')->group(function () {
     Route::resource('aset', AsetController::class)->parameters([
         'aset' => 'uuid'
     ]);
+    
+    Route::get('/', function () {
+        return view('welcome');
+    });
 
     // BARCODE
     Route::get('aset/{uuid}/detail', [AsetController::class, 'detail']);
