@@ -1,6 +1,25 @@
 {{-- _edit.blade.php --}}
-<form action="{{ route('aset.update', ['uuid' => $aset->id]) }}" method="POST"
-    class="p-4">
+<style>
+    .form-floating {
+        position: relative;
+    }
+
+    .input-icon {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        /* Adjust to position icon */
+        transform: translateY(-50%);
+        color: #007bff;
+        /* Change to your preferred color */
+    }
+
+    .form-control {
+        padding-right: 30px;
+        /* Make space for the icon */
+    }
+</style>
+<form action="{{ route('aset.update', ['uuid' => $aset->id]) }}" method="POST" class="p-4">
     @csrf
     @method('PUT')
     <div class="modal-body">
@@ -74,8 +93,9 @@
                     <div class="col-md-4">
                         <div class="form-floating">
                             <select name="status" required class="form-select" id="editStatus">
-                                @foreach(App\Models\Aset::getStatusOptions() as $value => $label)
-                                    <option value="{{ $value }}" {{ $aset->status == $value ? 'selected' : '' }}>
+                                @foreach (App\Models\Aset::getStatusOptions() as $value => $label)
+                                    <option value="{{ $value }}"
+                                        {{ $aset->status == $value ? 'selected' : '' }}>
                                         {{ $label }}
                                     </option>
                                 @endforeach
@@ -92,9 +112,13 @@
                 <div class="row g-3">
                     <div class="col-md-4">
                         <div class="form-floating">
-                            <input type="number" name="tahun_kepemilikan" class="form-control" id="editTahun"
-                                value="{{ $aset->tahun_kepemilikan }}" required placeholder="Tahun">
+                            <input type="number" id="editTahun" name="tahun_kepemilikan" class="form-control"
+                                data-bs-toggle="modal" data-bs-target="#yearSelectorModal"
+                                value="{{ $aset->tahun_kepemilikan ?? now()->year }}" readonly>
                             <label for="editTahun">Tahun Kepemilikan</label>
+                            <div class="input-icon">
+                                <i class="fas fa-calendar"></i>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-4">

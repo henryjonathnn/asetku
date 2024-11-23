@@ -302,29 +302,23 @@
 
     <div class="modal fade" id="yearSelectorModal" tabindex="-1" aria-labelledby="yearSelectorModalLabel"
         aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="yearSelectorModalLabel">Pilih Tahun</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <!-- Navigasi Tahun -->
-                    <div class="d-flex justify-content-between mb-3">
-                        <button class="btn btn-outline-secondary" id="prevYearRange">←</button>
-                        <span id="yearRange" class="fw-bold">2017 - 2032</span>
-                        <button class="btn btn-outline-secondary" id="nextYearRange">→</button>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <button class="btn btn-outline-secondary" id="prevYearRange">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <span id="yearRange" class="fw-bold"></span>
+                        <button class="btn btn-outline-secondary" id="nextYearRange">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
                     </div>
-
-                    <!-- Grid Tahun -->
-                    <div class="row row-cols-4 g-2" id="yearGrid">
-                        <!-- Tahun akan dimasukkan di sini dengan JS -->
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                    <button type="button" hidden class="btn btn-primary" id="selectYearBtn"
-                        data-bs-dismiss="modal">Pilih</button>
+                    <div class="row g-2" id="yearGrid"></div>
                 </div>
             </div>
         </div>
@@ -391,7 +385,146 @@
 
     @push('scripts')
         <script>
-            // Main initialization
+            class YearSelectorModal {
+                constructor() {
+                    this.yearGrid = document.getElementById("yearGrid");
+                    this.yearRange = document.getElementById("yearRange");
+                    this.startYear = 2017;
+                    this.endYear = 2032;
+                    this.selectedYear = new Date().getFullYear();
+                    this.targetInput = null;
+                    this.currentModalInstance = null;
+                    this.parentModalId = null;
+
+                    this.initialize();
+                }
+
+                initialize() {
+                    // Initialize navigation buttons
+                    document.getElementById("prevYearRange").addEventListener("click", () => {
+                        this.startYear -= 16;
+                        this.endYear -= 16;
+                        this.generateYearGrid();
+                    });
+
+                    document.getElementById("nextYearRange").addEventListener("click", () => {
+                        this.startYear += 16;
+                        this.endYear += 16;
+                        this.generateYearGrid();
+                    });
+
+                    // Initialize year selector modal events
+                    const yearSelectorModal = document.getElementById('yearSelectorModal');
+                    yearSelectorModal.addEventListener('show.bs.modal', (event) => {
+                        const button = event.relatedTarget;
+                        const input = button.closest('.form-floating').querySelector('input');
+                        if (input) {
+                            this.targetInput = input;
+                            this.selectedYear = parseInt(input.value) || new Date().getFullYear();
+                            // Store the parent modal ID
+                            this.parentModalId = input.id === 'createTahun' ? 'createAsetModal' : 'editAsetModal';
+                            this.generateYearGrid();
+                        }
+                    });
+
+                    // Store modal reference when it's opened
+                    yearSelectorModal.addEventListener('shown.bs.modal', () => {
+                        this.currentModalInstance = bootstrap.Modal.getInstance(yearSelectorModal);
+                    });
+
+                    // Setup year inputs
+                    this.setupYearInputs();
+                }
+
+                setupYearInputs() {
+                    const yearInputs = [{
+                            id: 'createTahun',
+                            modalId: 'createAsetModal'
+                        },
+                        {
+                            id: 'editTahun',
+                            modalId: 'editAsetModal'
+                        }
+                    ];
+
+                    yearInputs.forEach(({
+                        id,
+                        modalId
+                    }) => {
+                        const input = document.getElementById(id);
+                        if (input) {
+                            input.readOnly = true;
+                            const wrapper = input.closest('.form-floating');
+
+                            const selectYearBtn = document.createElement('button');
+                            selectYearBtn.type = 'button';
+                            selectYearBtn.className =
+                                'btn btn-link position-absolute end-0 top-50 translate-middle-y text-decoration-none';
+                            selectYearBtn.innerHTML = '<i class="fas fa-calendar"></i>';
+                            selectYearBtn.setAttribute('data-bs-toggle', 'modal');
+                            selectYearBtn.setAttribute('data-bs-target', '#yearSelectorModal');
+
+                            if (wrapper) {
+                                wrapper.style.position = 'relative';
+                                wrapper.appendChild(selectYearBtn);
+                            }
+                        }
+                    });
+                }
+
+                generateYearGrid() {
+                    this.yearGrid.innerHTML = '';
+                    for (let year = this.startYear; year <= this.endYear; year++) {
+                        const yearButton = document.createElement('div');
+                        yearButton.classList.add('col-3');
+
+                        const button = document.createElement('button');
+                        button.type = 'button';
+                        button.classList.add('btn', 'btn-outline-primary', 'w-100', 'mb-2');
+                        button.textContent = year;
+
+                        if (year === this.selectedYear) {
+                            button.classList.remove('btn-outline-primary');
+                            button.classList.add('btn-primary', 'text-white');
+                        }
+
+                        button.addEventListener('click', () => this.handleYearSelection(year));
+                        yearButton.appendChild(button);
+                        this.yearGrid.appendChild(yearButton);
+                    }
+                    this.yearRange.textContent = `${this.startYear} - ${this.endYear}`;
+                }
+
+                handleYearSelection(year) {
+                    if (this.targetInput) {
+                        this.targetInput.value = year;
+
+                        // Close the year selector modal
+                        if (this.currentModalInstance) {
+                            this.currentModalInstance.hide();
+                        }
+
+                        // Show the parent modal after a short delay
+                        setTimeout(() => {
+                            if (this.parentModalId) {
+                                const parentModal = document.getElementById(this.parentModalId);
+                                if (parentModal) {
+                                    const parentModalInstance = bootstrap.Modal.getInstance(parentModal);
+                                    if (!parentModalInstance) {
+                                        // If modal instance doesn't exist, create new one
+                                        new bootstrap.Modal(parentModal).show();
+                                    } else {
+                                        // If modal instance exists, show it
+                                        parentModalInstance.show();
+                                    }
+                                }
+                            }
+                        }, 150); // Small delay to ensure smooth transition
+                    }
+                }
+            }
+
+
             // Main initialization
             document.addEventListener('DOMContentLoaded', function() {
                 const elements = {
@@ -407,63 +540,46 @@
                     fileInput: document.querySelector('#foto')
                 };
 
-                const yearGrid = document.getElementById("yearGrid");
-                const yearRange = document.getElementById("yearRange");
-                const selectYearBtn = document.getElementById("selectYearBtn");
-                const tahunInput = document.getElementById("createTahun");
-                let startYear = 2017;
-                let endYear = 2032;
-                let selectedYear = 2024; // Default selected year
 
-                // Fungsi untuk generate grid tahun
-                function generateYearGrid() {
-                    yearGrid.innerHTML = ''; // Clear grid
-                    for (let year = startYear; year <= endYear; year++) {
-                        const yearButton = document.createElement('button');
-                        yearButton.classList.add('btn', 'btn-outline-primary', 'col-3');
-                        yearButton.textContent = year;
-                        if (year === selectedYear) {
-                            yearButton.classList.add('btn-primary', 'text-white');
+                // Initialize year selector
+                // const yearSelector = new YearSelectorModal();
+                new YearSelectorModal();
+
+                const editModal = document.getElementById('editAsetModal');
+                if (editModal) {
+                    editModal.addEventListener('show.bs.modal', function() {
+                        // Pastikan input tahun di modal edit sudah disetup
+                        const editYearInput = document.getElementById('editTahun');
+                        if (editYearInput) {
+                            yearSelector.setupYearInputForElement(editYearInput, 'editAsetModal');
                         }
-                        yearButton.addEventListener('click', function() {
-                            selectedYear = year;
-                            tahunInput.value = selectedYear; // Display the selected year in the input field
-
-                            // Close the year selector modal
-                            const yearSelectorModal = bootstrap.Modal.getInstance(document.getElementById(
-                                'yearSelectorModal'));
-                            yearSelectorModal.hide();
-
-                            // Open the create asset modal
-                            const createAsetModal = new bootstrap.Modal(document.getElementById(
-                                'createAsetModal'));
-                            createAsetModal.show();
-                        });
-                        yearGrid.appendChild(yearButton);
-                    }
-                    yearRange.textContent = `${startYear} - ${endYear}`;
+                    });
                 }
 
-                // Tombol Navigasi Rentang Tahun
-                document.getElementById("prevYearRange").addEventListener("click", function() {
-                    startYear -= 16;
-                    endYear -= 16;
-                    generateYearGrid();
-                });
+                // Update both create and edit form year inputs to be readonly and trigger year selector
+                const yearInputs = ['createTahun', 'editTahun'];
+                yearInputs.forEach(inputId => {
+                    const input = document.getElementById(inputId);
+                    if (input) {
+                        input.readOnly = true;
+                        const wrapper = input.closest('.form-floating');
 
-                document.getElementById("nextYearRange").addEventListener("click", function() {
-                    startYear += 16;
-                    endYear += 16;
-                    generateYearGrid();
-                });
+                        // Create button to trigger year selector
+                        const selectYearBtn = document.createElement('button');
+                        selectYearBtn.type = 'button';
+                        selectYearBtn.className =
+                            'btn btn-link position-absolute end-0 top-50 translate-middle-y text-decoration-none';
+                        selectYearBtn.innerHTML = '<i class="fas fa-calendar"></i>';
+                        selectYearBtn.setAttribute('data-bs-toggle', 'modal');
+                        selectYearBtn.setAttribute('data-bs-target', '#yearSelectorModal');
+                        selectYearBtn.setAttribute('data-target-input', inputId);
+                        selectYearBtn.setAttribute('data-target-modal', inputId === 'createTahun' ?
+                            'createAsetModal' : 'editAsetModal');
 
-                // Event Listener untuk tombol "Pilih" pada modal
-                selectYearBtn.addEventListener('click', function() {
-                    tahunInput.value = selectedYear; // Set value in input with selected year
+                        wrapper.style.position = 'relative';
+                        wrapper.appendChild(selectYearBtn);
+                    }
                 });
-
-                // Inisialisasi grid tahun pertama
-                generateYearGrid();
 
                 // Initialize other handlers (e.g., photo handling, checkbox handling)
                 initializePhotoHandlers();
@@ -683,6 +799,23 @@
             .form-check-input:checked {
                 background-color: #0d6efd;
                 border-color: #0d6efd;
+            }
+
+            .form-floating button.btn-link {
+                padding: 0.375rem 0.75rem;
+                z-index: 4;
+            }
+
+            .form-floating button.btn-link:hover {
+                color: var(--bs-primary);
+            }
+
+            #yearGrid button {
+                transition: all 0.2s;
+            }
+
+            #yearGrid button:hover:not(.btn-primary) {
+                transform: scale(1.05);
             }
         </style>
     @endpush
