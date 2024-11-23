@@ -379,12 +379,10 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating position-relative">
-                                    <input type="text" name="tahun_kepemilikan" class="form-control year-picker"
-                                        id="editahun" placeholder="Tahun" readonly data-bs-toggle="modal"
-                                        data-bs-target="#yearSelectorModal" value="{{ $aset->tahun_kepemilikan }}">
+                                    <input type="number" id="editTahun" name="tahun_kepemilikan" class="form-control"
+                                        data-bs-toggle="modal" data-bs-target="#yearSelectorModal"
+                                        value="{{ $aset->tahun_kepemilikan ?? now()->year }}" readonly>
                                     <label for="editTahun">Tahun Kepemilikan</label>
-                                    <i
-                                        class="fas fa-calendar position-absolute end-0 top-50 translate-middle-y me-3 text-muted"></i>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -436,30 +434,29 @@
     </div>
 
     <!-- Year Selector Modal -->
-    <div class="modal fade" id="yearSelectorModal" tabindex="-1" data-bs-backdrop="static">
-        <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal fade" id="yearSelectorModal" tabindex="-1" aria-labelledby="yearSelectorModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header border-0 pb-0">
-                    <h5 class="modal-title">Pilih Tahun</h5>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="yearSelectorModalLabel">Pilih Tahun</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="year-selector">
-                        <div class="year-navigation d-flex justify-content-between align-items-center mb-3">
-                            <button class="btn btn-sm btn-outline-secondary navigate-years" data-direction="prev">
-                                <i class="fas fa-chevron-left"></i>
-                            </button>
-                            <span class="year-range fw-bold"></span>
-                            <button class="btn btn-sm btn-outline-secondary navigate-years" data-direction="next">
-                                <i class="fas fa-chevron-right"></i>
-                            </button>
-                        </div>
-                        <div class="years-grid row g-2"></div>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <button class="btn btn-outline-secondary" id="prevYearRange">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <span id="yearRange" class="fw-bold"></span>
+                        <button class="btn btn-outline-secondary" id="nextYearRange">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
                     </div>
+                    <div class="row g-2" id="yearGrid"></div>
                 </div>
             </div>
         </div>
     </div>
-
 
     @push('scripts')
         <script>
@@ -482,6 +479,145 @@
                 }
             }
 
+            class YearSelectorModal {
+                constructor() {
+                    this.yearGrid = document.getElementById("yearGrid");
+                    this.yearRange = document.getElementById("yearRange");
+                    this.startYear = 2017;
+                    this.endYear = 2032;
+                    this.selectedYear = new Date().getFullYear();
+                    this.targetInput = null;
+                    this.currentModalInstance = null;
+                    this.parentModalId = null;
+
+                    this.initialize();
+                }
+
+                initialize() {
+                    // Initialize navigation buttons
+                    document.getElementById("prevYearRange").addEventListener("click", () => {
+                        this.startYear -= 16;
+                        this.endYear -= 16;
+                        this.generateYearGrid();
+                    });
+
+                    document.getElementById("nextYearRange").addEventListener("click", () => {
+                        this.startYear += 16;
+                        this.endYear += 16;
+                        this.generateYearGrid();
+                    });
+
+                    // Initialize year selector modal events
+                    const yearSelectorModal = document.getElementById('yearSelectorModal');
+                    yearSelectorModal.addEventListener('show.bs.modal', (event) => {
+                        const button = event.relatedTarget;
+                        const input = button.closest('.form-floating').querySelector('input');
+                        if (input) {
+                            this.targetInput = input;
+                            this.selectedYear = parseInt(input.value) || new Date().getFullYear();
+                            // Store the parent modal ID
+                            this.parentModalId = input.id === 'createTahun' ? 'createAsetModal' : 'editAssetModal';
+                            this.generateYearGrid();
+                        }
+                    });
+
+                    // Store modal reference when it's opened
+                    yearSelectorModal.addEventListener('shown.bs.modal', () => {
+                        this.currentModalInstance = bootstrap.Modal.getInstance(yearSelectorModal);
+                    });
+
+                    // Setup year inputs
+                    this.setupYearInputs();
+                }
+
+                setupYearInputs() {
+                    const yearInputs = [{
+                            id: 'createTahun',
+                            modalId: 'createAsetModal'
+                        },
+                        {
+                            id: 'editTahun',
+                            modalId: 'editAssetModal'
+                        }
+                    ];
+
+                    yearInputs.forEach(({
+                        id,
+                        modalId
+                    }) => {
+                        const input = document.getElementById(id);
+                        if (input) {
+                            input.readOnly = true;
+                            const wrapper = input.closest('.form-floating');
+
+                            const selectYearBtn = document.createElement('button');
+                            selectYearBtn.type = 'button';
+                            selectYearBtn.className =
+                                'btn btn-link position-absolute end-0 top-50 translate-middle-y text-decoration-none';
+                            selectYearBtn.innerHTML = '<i class="fas fa-calendar"></i>';
+                            selectYearBtn.setAttribute('data-bs-toggle', 'modal');
+                            selectYearBtn.setAttribute('data-bs-target', '#yearSelectorModal');
+
+                            if (wrapper) {
+                                wrapper.style.position = 'relative';
+                                wrapper.appendChild(selectYearBtn);
+                            }
+                        }
+                    });
+                }
+
+                generateYearGrid() {
+                    this.yearGrid.innerHTML = '';
+                    for (let year = this.startYear; year <= this.endYear; year++) {
+                        const yearButton = document.createElement('div');
+                        yearButton.classList.add('col-3');
+
+                        const button = document.createElement('button');
+                        button.type = 'button';
+                        button.classList.add('btn', 'btn-outline-primary', 'w-100', 'mb-2');
+                        button.textContent = year;
+
+                        if (year === this.selectedYear) {
+                            button.classList.remove('btn-outline-primary');
+                            button.classList.add('btn-primary', 'text-white');
+                        }
+
+                        button.addEventListener('click', () => this.handleYearSelection(year));
+                        yearButton.appendChild(button);
+                        this.yearGrid.appendChild(yearButton);
+                    }
+                    this.yearRange.textContent = `${this.startYear} - ${this.endYear}`;
+                }
+
+                handleYearSelection(year) {
+                    if (this.targetInput) {
+                        this.targetInput.value = year;
+
+                        // Close the year selector modal
+                        if (this.currentModalInstance) {
+                            this.currentModalInstance.hide();
+                        }
+
+                        // Show the parent modal after a short delay
+                        setTimeout(() => {
+                            if (this.parentModalId) {
+                                const parentModal = document.getElementById(this.parentModalId);
+                                if (parentModal) {
+                                    const parentModalInstance = bootstrap.Modal.getInstance(parentModal);
+                                    if (!parentModalInstance) {
+                                        // If modal instance doesn't exist, create new one
+                                        new bootstrap.Modal(parentModal).show();
+                                    } else {
+                                        // If modal instance exists, show it
+                                        parentModalInstance.show();
+                                    }
+                                }
+                            }
+                        }, 150); // Small delay to ensure smooth transition
+                    }
+                }
+            }
+
             document.addEventListener('DOMContentLoaded', function() {
                 const masterKegiatanSelect = document.getElementById('id_master_kegiatan');
                 const customKegiatanDiv = document.getElementById('customKegiatanDiv');
@@ -500,6 +636,45 @@
                         customKegiatanTextarea.value = '';
                     }
                 });
+
+                new YearSelectorModal();
+
+                const editModal = document.getElementById('editAssetModal');
+                if (editModal) {
+                    editModal.addEventListener('show.bs.modal', function() {
+                        // Pastikan input tahun di modal edit sudah disetup
+                        const editYearInput = document.getElementById('editTahun');
+                        if (editYearInput) {
+                            yearSelector.setupYearInputForElement(editYearInput, 'editAssetModal');
+                        }
+                    });
+                }
+
+                // Update both create and edit form year inputs to be readonly and trigger year selector
+                const yearInputs = ['createTahun', 'editTahun'];
+                yearInputs.forEach(inputId => {
+                    const input = document.getElementById(inputId);
+                    if (input) {
+                        input.readOnly = true;
+                        const wrapper = input.closest('.form-floating');
+
+                        // Create button to trigger year selector
+                        const selectYearBtn = document.createElement('button');
+                        selectYearBtn.type = 'button';
+                        selectYearBtn.className =
+                            'btn btn-link position-absolute end-0 top-50 translate-middle-y text-decoration-none';
+                        selectYearBtn.innerHTML = '<i class="fas fa-calendar"></i>';
+                        selectYearBtn.setAttribute('data-bs-toggle', 'modal');
+                        selectYearBtn.setAttribute('data-bs-target', '#yearSelectorModal');
+                        selectYearBtn.setAttribute('data-target-input', inputId);
+                        selectYearBtn.setAttribute('data-target-modal', inputId === 'createTahun' ?
+                            'createAsetModal' : 'editAssetModal');
+
+                        wrapper.style.position = 'relative';
+                        wrapper.appendChild(selectYearBtn);
+                    }
+                });
+
 
                 form.addEventListener('submit', function(e) {
                     const selectedOption = masterKegiatanSelect.options[masterKegiatanSelect.selectedIndex];
