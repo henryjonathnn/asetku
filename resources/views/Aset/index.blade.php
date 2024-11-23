@@ -13,47 +13,65 @@
                 <span>Tambah Aset</span>
             </button>
         </div>
+        <!-- Search and Filter Card -->
 
-        {{-- <!-- Search and Filter Card -->
         <div class="card shadow-sm mb-4">
             <div class="card-body">
                 <div class="row g-3">
-                    <!-- Search -->
-                    <div class="col-md-4">
+                    <!-- Search Input Group -->
+                    <div class="col-md-6">
                         <div class="input-group">
                             <span class="input-group-text bg-white border-end-0">
                                 <i class="fas fa-search text-muted"></i>
                             </span>
                             <input type="text" class="form-control border-start-0 ps-0" id="searchInput"
                                 placeholder="Cari aset...">
+                            <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#filterOptions">
+                                <i class="fas fa-filter me-1"></i> Filter
+                            </button>
                         </div>
                     </div>
-                    <!-- Filter Jenis -->
-                    <div class="col-md-3">
-                        <select class="form-select" id="jenisFilter">
-                            <option value="">Semua Jenis</option>
-                        </select>
-                    </div>
-                    <!-- Filter Kepemilikan -->
-                    <div class="col-md-3">
-                        <select class="form-select" id="kepemilikanFilter">
-                            <option value="">Semua Kepemilikan</option>
-                            @foreach ($kepemilikan as $k)
-                                <option value="{{ $k->id }}">{{ $k->kepemilikan }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <!-- Export Button -->
-                    <div class="col-md-2">
-                        <button type="button"
-                            class="btn btn-outline-primary w-100 d-flex align-items-center justify-content-center gap-2">
-                            <i class="fas fa-download"></i>
-                            <span>Export</span>
-                        </button>
+
+                    <!-- Filter Collapse Section -->
+                    <div class="col-12 collapse" id="filterOptions">
+                        <div class="card card-body border-0 bg-light">
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <h6 class="mb-2">Cari berdasarkan:</h6>
+                                    <div class="d-flex gap-3 flex-wrap">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="searchById" checked>
+                                            <label class="form-check-label" for="searchById">
+                                                ID
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="searchByNama">
+                                            <label class="form-check-label" for="searchByNama">
+                                                Nama Barang
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="searchByJenis">
+                                            <label class="form-check-label" for="searchByJenis">
+                                                Jenis
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="searchByNomor">
+                                            <label class="form-check-label" for="searchByNomor">
+                                                Nomor Aset
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div> --}}
+        </div>
 
         <!-- Assets List Card -->
         <div class="card shadow-sm">
@@ -540,6 +558,88 @@
                     fileInput: document.querySelector('#foto')
                 };
 
+                const searchInput = document.getElementById('searchInput');
+                const searchById = document.getElementById('searchById');
+                const searchByNama = document.getElementById('searchByNama');
+                const searchByJenis = document.getElementById('searchByJenis');
+                const searchByNomor = document.getElementById('searchByNomor');
+                const tableRows = document.querySelectorAll('table tbody tr');
+
+                function filterTable() {
+                    const searchTerm = searchInput.value.toLowerCase();
+
+                    tableRows.forEach(row => {
+                        let showRow = false;
+
+                        if (searchTerm === '') {
+                            showRow = true;
+                        } else {
+                            // Check ID (only the part after the last '-')
+                            if (searchById.checked) {
+                                const idCell = row.querySelector('td:nth-child(3)');
+                                const idText = idCell.querySelector('small').textContent;
+                                const idNumber = idText.split('ID: ')[1];
+                                if (idNumber.toLowerCase().includes(searchTerm)) {
+                                    showRow = true;
+                                }
+                            }
+
+                            // Check Nama Barang
+                            if (searchByNama.checked) {
+                                const namaCell = row.querySelector('td:nth-child(5)');
+                                const namaText = namaCell.querySelector('.fw-medium').textContent;
+                                if (namaText.toLowerCase().includes(searchTerm)) {
+                                    showRow = true;
+                                }
+                            }
+
+                            // Check Jenis
+                            if (searchByJenis.checked) {
+                                const jenisCell = row.querySelector('td:nth-child(4)');
+                                const jenisText = jenisCell.textContent;
+                                if (jenisText.toLowerCase().includes(searchTerm)) {
+                                    showRow = true;
+                                }
+                            }
+
+                            // Check Nomor Aset
+                            if (searchByNomor.checked) {
+                                const nomorCell = row.querySelector('td:nth-child(3)');
+                                const nomorText = nomorCell.querySelector('.fw-medium').textContent;
+                                if (nomorText.toLowerCase().includes(searchTerm)) {
+                                    showRow = true;
+                                }
+                            }
+                        }
+
+                        row.style.display = showRow ? '' : 'none';
+                    });
+                }
+
+                // Add event listeners
+                searchInput.addEventListener('input', filterTable);
+                searchById.addEventListener('change', filterTable);
+                searchByNama.addEventListener('change', filterTable);
+                searchByJenis.addEventListener('change', filterTable);
+                searchByNomor.addEventListener('change', filterTable);
+
+                // Ensure at least one checkbox is checked
+                function updateCheckboxStates() {
+                    const checkboxes = [searchById, searchByNama, searchByJenis, searchByNomor];
+                    const checkedCount = checkboxes.filter(cb => cb.checked).length;
+
+                    checkboxes.forEach(checkbox => {
+                        checkbox.disabled = checkbox.checked && checkedCount === 1;
+                    });
+                }
+
+                [searchById, searchByNama, searchByJenis, searchByNomor].forEach(checkbox => {
+                    checkbox.addEventListener('change', updateCheckboxStates);
+                });
+
+                // Initial call
+                updateCheckboxStates();
+
 
                 // Initialize year selector
                 // const yearSelector = new YearSelectorModal();
@@ -816,6 +916,20 @@
 
             #yearGrid button:hover:not(.btn-primary) {
                 transform: scale(1.05);
+            }
+
+            .filter-options {
+                transition: all 0.3s ease-in-out;
+            }
+
+            .form-check-input:checked {
+                background-color: #0d6efd;
+                border-color: #0d6efd;
+            }
+
+            .form-check-input:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
             }
         </style>
     @endpush
