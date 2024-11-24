@@ -170,7 +170,49 @@
                         Menampilkan {{ $aset->firstItem() ?? 0 }} - {{ $aset->lastItem() ?? 0 }} dari
                         {{ $aset->total() ?? 0 }} aset
                     </div>
-                    {{ $aset->links() }}
+
+                    @if ($aset->hasPages())
+                        <nav class="d-flex justify-content-end">
+                            <ul class="pagination mb-0">
+                                {{-- Previous Page Link --}}
+                                @if ($aset->onFirstPage())
+                                    <li class="page-item disabled">
+                                        <span class="page-link">&laquo;</span>
+                                    </li>
+                                @else
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ $aset->previousPageUrl() }}"
+                                            rel="prev">&laquo;</a>
+                                    </li>
+                                @endif
+
+                                {{-- Pagination Elements --}}
+                                @foreach ($aset->getUrlRange(1, $aset->lastPage()) as $page => $url)
+                                    @if ($page == $aset->currentPage())
+                                        <li class="page-item active">
+                                            <span class="page-link">{{ $page }}</span>
+                                        </li>
+                                    @else
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                                        </li>
+                                    @endif
+                                @endforeach
+
+                                {{-- Next Page Link --}}
+                                @if ($aset->hasMorePages())
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ $aset->nextPageUrl() }}"
+                                            rel="next">&raquo;</a>
+                                    </li>
+                                @else
+                                    <li class="page-item disabled">
+                                        <span class="page-link">&raquo;</span>
+                                    </li>
+                                @endif
+                            </ul>
+                        </nav>
+                    @endif
                 </div>
             </div>
         </div>
@@ -893,7 +935,63 @@
             }
 
             .pagination {
-                margin-bottom: 0;
+                display: flex;
+                padding-left: 0;
+                list-style: none;
+                gap: 0.25rem;
+            }
+
+            .page-link {
+                position: relative;
+                display: block;
+                padding: 0.5rem 0.75rem;
+                margin-left: -1px;
+                line-height: 1.25;
+                color: #4b5563;
+                background-color: #fff;
+                border: 1px solid #e5e7eb;
+                border-radius: 6px;
+                text-decoration: none;
+                transition: all 0.2s ease-in-out;
+            }
+
+            .page-link:hover {
+                z-index: 2;
+                color: #1f2937;
+                background-color: #f3f4f6;
+                border-color: #e5e7eb;
+            }
+
+            .page-item.active .page-link {
+                z-index: 3;
+                color: #fff;
+                background-color: #0d6efd;
+                border-color: #0d6efd;
+            }
+
+            .page-item.disabled .page-link {
+                color: #9ca3af;
+                pointer-events: none;
+                background-color: #f9fafb;
+                border-color: #e5e7eb;
+            }
+
+            /* Responsive adjustments */
+            @media (max-width: 576px) {
+                .d-flex.justify-content-between.align-items-center {
+                    flex-direction: column;
+                    gap: 1rem;
+                }
+
+                .text-muted.small {
+                    text-align: center;
+                    margin-bottom: 0.5rem;
+                }
+
+                .pagination {
+                    justify-content: center;
+                    flex-wrap: wrap;
+                }
             }
 
             .form-check-input:checked {
