@@ -19,7 +19,8 @@
         /* Make space for the icon */
     }
 </style>
-<form action="{{ route('aset.update', ['uuid' => $aset->id]) }}" method="POST" class="p-4">
+<form action="{{ route('aset.update', ['uuid' => $aset->id]) }}" method="POST" enctype="multipart/form-data"
+    class="p-4">
     @csrf
     @method('PUT')
     <div class="modal-body">
@@ -140,6 +141,30 @@
                                 @endforeach
                             </select>
                             <label for="editKepemilikan">Kepemilikan</label>
+                        </div>
+                    </div>
+                    <div class="row g-3 mt-2">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" name="lokasi" class="form-control" id="editLokasi"
+                                    value="{{ $aset->lokasi }}" placeholder="Lokasi">
+                                <label for="editLokasi">Lokasi</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="file" name="foto_aset" class="form-control" id="editFotoAset"
+                                    placeholder="Foto Aset" accept="image/*">
+                                <label for="editFotoAset">Foto Aset</label>
+                                @if ($aset->foto_aset)
+                                    <div class="mt-2 text-center">
+                                        <img src="{{ asset('storage/' . $aset->foto_aset) }}"
+                                            alt="Current Asset Photo" class="img-thumbnail float-end"
+                                            style="max-width: 150px; max-height: 150px; object-fit: cover;">
+                                    </div>
+                                @endif
+
+                            </div>
                         </div>
                     </div>
                 </div>

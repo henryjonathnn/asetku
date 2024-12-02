@@ -8,6 +8,7 @@ use App\Models\Jenis;
 use App\Models\Kegiatan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class AsetController extends Controller
 {
@@ -23,7 +24,7 @@ class AsetController extends Controller
         return view('aset.index', compact('aset', 'kepemilikan', 'jenis', 'kegiatan'));
     }
 
- 
+
     public function detail(string $uuid)
     {
         $aset = Aset::select([
@@ -34,6 +35,8 @@ class AsetController extends Controller
             'serial_number',
             'part_number',
             'spek',
+            'lokasi',
+            'foto_aset',
             'pengguna',
             'status',
             'tahun_kepemilikan',
@@ -69,11 +72,27 @@ class AsetController extends Controller
             'serial_number' => 'nullable|string|max:255',
             'part_number' => 'nullable|string|max:255',
             'spek' => 'nullable|string',
+            'lokasi' => 'nullable|string',
+            'foto_aset' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'pengguna' => 'nullable|string|max:255',
             'tahun_kepemilikan' => 'nullable|integer|digits:4',
             'status' => 'nullable',
             'id_kepemilikan' => 'nullable',
         ]);
+
+        $fotoPath = null;
+
+        if ($request->hasFile('foto_aset')) {
+            $file = $request->file('foto_aset');
+            $fileName = time() . '-' . $file->getClientOriginalName();
+            $storagePath = 'aset/' . $fileName;
+
+            $image = $this->compressImage($file);
+
+            Storage::disk('public')->put($storagePath, $image);
+
+            $validated['foto_aset'] = $storagePath;
+        }
 
         $aset = Aset::create($validated);
 
@@ -101,6 +120,8 @@ class AsetController extends Controller
             'serial_number',
             'part_number',
             'spek',
+            'lokasi',
+            'foto_aset',
             'status',
             'pengguna',
             'tahun_kepemilikan',
@@ -128,6 +149,8 @@ class AsetController extends Controller
             'serial_number' => 'nullable|string|max:255',
             'part_number' => 'nullable|string|max:255',
             'spek' => 'nullable|string',
+            'lokasi' => 'nullable|string',
+            'foto_aset' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'pengguna' => 'required|string|max:255',
             'status' => 'required',
             'tahun_kepemilikan' => 'nullable|integer|digits:4',
@@ -135,6 +158,23 @@ class AsetController extends Controller
         ]);
 
         $aset = Aset::findOrFail($uuid);
+
+        if ($request->hasFile('foto_aset')) {
+            $file = $request->file('foto_aset');
+            $fileName = time() . '-' . $file->getClientOriginalName();
+            $storagePath = 'aset/' . $fileName;
+
+            if ($aset->foto_aset && Storage::disk('public')->exists($aset->foto_aset)) {
+                Storage::disk('public')->delete($aset->foto_aset);
+            }
+
+            $image = $this->compressImage($file);
+
+            Storage::disk('public')->put($storagePath, $image);
+
+            $validated['foto_aset'] = $storagePath;
+        }
+
         $aset->update($validated);
 
         if ($request->ajax()) {
@@ -146,6 +186,30 @@ class AsetController extends Controller
 
         return redirect()->route('aset.index')
             ->with('success', 'Data aset berhasil diperbarui!');
+    }
+
+    private function compressImage($file)
+    {
+        $image = imagecreatefromstring(file_get_contents($file->getRealPath()));
+
+        $width = imagesx($image);
+        $heigth = imagesy($image);
+
+        $newWidth = min($width, 1920);
+        $newHeigth = floor($heigth * ($newWidth / $width));
+
+        $newImage = imagecreatetruecolor($newWidth, $newHeigth);
+
+        imagecopyresampled($newImage, $image, 0, 0, 0, 0, $newWidth, $newHeigth, $width, $heigth);
+
+        ob_start();
+        imagejpeg($newImage, null, 75);
+        $comppresedImage = ob_get_clean();
+
+        imagedestroy($image);
+        imagedestroy($newImage);
+
+        return $comppresedImage;
     }
 
     public function printSelected(Request $request)

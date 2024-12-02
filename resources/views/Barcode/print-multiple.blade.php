@@ -1,62 +1,62 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <title>Print QR Codes</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 5px;
+            padding: 0;
         }
 
         .qr-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            /* Menambah jarak antar elemen */
-            padding: 20px;
-            /* Menambah jarak tepi */
+            grid-template-columns: repeat(6, 1fr); /* 6 QR Code per baris */
+            gap: 2px; /* Jarak antar item */
             justify-content: center;
+            padding: 2px; /* Sedikit padding di container */
+            margin: 0 auto;
+            width: fit-content;
         }
 
         .qr-item {
             border: 1px solid #ddd;
-            padding: 10px;
+            padding: 4px 3px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 2px;
-            width: 120px;
-            /* Set a fixed width */
-            height: 120px;
-            /* Set a fixed height to match the width */
-            justify-content: center;
-        }
-
-
-        .qr-code {
-            width: 80px;
-            height: 80px;
-            flex-shrink: 0;
+            width: 100px;
+            height: 100px;
+            justify-content: space-between;
+            margin: 0; /* Menghapus negative margin */
         }
 
         .qr-content {
             display: flex;
             align-items: center;
+            gap: 1px;
+            margin-bottom: 1px;
+        }
+
+        .qr-code {
+            width: 70px;
+            height: 70px;
+            display: flex;
             justify-content: center;
-            margin-bottom: -20px;
+            align-items: center;
+            margin-right: 1px;
         }
 
         .aset-info {
-            margin-top: 0;
-            text-align: left;
-            flex-grow: 1;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            max-width: 25px;
         }
 
         .aset-info p {
             margin: 0;
-            font-size: 11px;
+            font-size: 7px;
             word-break: break-all;
         }
 
@@ -68,32 +68,30 @@
             margin: 0 !important;
         }
 
-
         .logos {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 8px;
+            width: 100%;
+            margin-top: 0;
         }
 
         .logo-wrapper {
             display: flex;
             align-items: center;
-            height: 60px;
+            height: 22px;
         }
 
         .gambar-rs {
-            height: 55px;
+            height: 22px;
             width: auto;
         }
 
         .gambar-it {
-            height: 28px;
+            height: 14px;
             width: auto;
-            margin-left: 8px;
-            margin-bottom: -6px;
+            margin-left: 2px;
         }
-
 
         .btn {
             padding: 8px 15px;
@@ -113,88 +111,19 @@
             color: white;
         }
 
-
-        /* Print styles */
-        /* Print styles */
-        @page {
-            size: A4;
-            margin: 0.5cm;
-        }
-
         @media print {
             body {
                 padding: 0;
-                margin: 0;
-                font-family: Arial, sans-serif;
+            }
+
+            .qr-grid {
+                gap: 2px; /* Mempertahankan jarak yang sama saat print */
+                padding: 2px;
+                margin: 0 auto;
             }
 
             .print-controls {
                 display: none;
-            }
-
-            .qr-grid {
-                display: grid;
-                grid-template-columns: repeat(4, 1fr);
-                /* Ensure same column layout */
-                gap: 10px;
-                /* Adjust spacing for print */
-                padding: 1px;
-            }
-
-            .qr-item {
-                break-inside: avoid;
-                page-break-inside: avoid;
-                margin-top: 20px;
-                padding: 10px;
-                /* Uniform padding */
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                width: 110px;
-                /* Fixed width for consistency */
-                height: 110px;
-                /* Fixed height for consistency */
-                border: 1px solid #ddd;
-            }
-
-            .qr-code svg {
-                width: 80px !important;
-                height: 80px !important;
-            }
-
-            .qr-content {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                margin-bottom: -20px;
-            }
-
-            .aset-info p {
-                font-size: 8px;
-                text-align: center;
-                margin: 0;
-            }
-
-            .logos {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                gap: 8px;
-                margin: 0 auto;
-            }
-
-            .logo-wrapper {
-                display: flex;
-                align-items: center;
-                height: 60px;
-            }
-
-            .gambar-rs {
-                height: 40px;
-            }
-
-            .gambar-it {
-                height: 20px;
             }
         }
     </style>
@@ -238,5 +167,4 @@
         });
     </script>
 </body>
-
 </html>

@@ -73,8 +73,29 @@ class KegiatanController extends Controller
         $fotoPath = null;
         if ($request->hasFile('foto')) {
             $file = $request->file('foto');
+
             $fileName = time() . '_' . $file->getClientOriginalName();
-            $fotoPath = $file->storeAs('kegiatan', $fileName, 'public');
+
+            $storagePath = 'kegiatan/' . $fileName;
+
+            $image = imagecreatefromjpeg($file->getRealPath());
+
+            $width = imagesx($image);
+            $height = imagesy($image);
+
+            $newWidth = min($width, 1920);
+            $newHeight = floor($height * ($newWidth / $width));
+
+            $newImage = imagecreatetruecolor($newWidth, $newHeight);
+
+            imagecopyresampled($newImage, $image, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+
+            imagejpeg($newImage, storage_path('app/public/' . $storagePath), 75);
+
+            imagedestroy($image);
+            imagedestroy($newImage);
+
+            $fotoPath = $storagePath;
         }
 
         Kegiatan::create([
@@ -101,6 +122,8 @@ class KegiatanController extends Controller
             'serial_number' => 'required',
             'part_number' => 'required',
             'pengguna' => 'required',
+            'lokasi' => 'nullable|string',
+            'foto_aset' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'tahun_kepemilikan' => 'required|numeric',
             'status' => 'required',
             'id_kepemilikan' => 'required',
@@ -117,22 +140,55 @@ class KegiatanController extends Controller
         }
 
         try {
-
             unset($validatedData['username']);
             unset($validatedData['password']);
 
-         
             $aset = Aset::findOrFail($uuid);
 
-            // Handle upload
-            if ($request->hasFile('foto')) {
+            // Handle foto_aset upload with compression
+            if ($request->hasFile('foto_aset')) {
                 // Hapus foto lama jika ada
-                if ($aset->foto && Storage::exists('public/' . $aset->foto)) {
-                    Storage::delete('public/' . $aset->foto);
+                if ($aset->foto_aset && Storage::exists('public/' . $aset->foto_aset)) {
+                    Storage::delete('public/' . $aset->foto_aset);
                 }
 
-                // Upload foto baru
-                $validatedData['foto'] = $this->handleFileUpload($request, 'foto', 'aset');
+                // Upload dan compress foto baru
+                $file = $request->file('foto_aset');
+                $fileName = time() . '_' . $file->getClientOriginalName();
+                $storagePath = 'aset/' . $fileName;
+
+                // Kompresi gambar
+                $image = imagecreatefromstring(file_get_contents($file->getRealPath()));
+
+                $width = imagesx($image);
+                $height = imagesy($image);
+
+                $newWidth = min($width, 1920);
+                $newHeight = floor($height * ($newWidth / $width));
+
+                $newImage = imagecreatetruecolor($newWidth, $newHeight);
+
+                // Untuk mendukung transparansi pada PNG
+                if ($file->getClientOriginalExtension() == 'png') {
+                    imagealphablending($newImage, false);
+                    imagesavealpha($newImage, true);
+                    $transparent = imagecolorallocatealpha($newImage, 255, 255, 255, 127);
+                    imagefilledrectangle($newImage, 0, 0, $newWidth, $newHeight, $transparent);
+                }
+
+                imagecopyresampled($newImage, $image, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+
+                // Simpan gambar dengan kompresi
+                if ($file->getClientOriginalExtension() == 'png') {
+                    imagepng($newImage, storage_path('app/public/' . $storagePath), 7);
+                } else {
+                    imagejpeg($newImage, storage_path('app/public/' . $storagePath), 75);
+                }
+
+                imagedestroy($image);
+                imagedestroy($newImage);
+
+                $validatedData['foto_aset'] = $storagePath;
             }
 
             $aset->update($validatedData);
@@ -142,7 +198,7 @@ class KegiatanController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()
                 ->withInput()
-                ->with('error', 'Terjadi kesalahan saat memperbarui data aset');
+                ->with('error', 'Terjadi kesalahan saat memperbarui data aset: ' . $e->getMessage());
         }
     }
 

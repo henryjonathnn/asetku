@@ -54,6 +54,15 @@
                                 <strong>{{ $aset->part_number ?? '-' }}</strong>
                             </div>
                         </div>
+                        <div class="d-flex align-items-center">
+                            <div class="bg-light rounded-circle p-2 me-3">
+                                <i class="fas fa-location-dot text-primary"></i>
+                            </div>
+                            <div>
+                                <small class="text-muted d-block">Lokasi</small>
+                                <strong>{{ $aset->lokasi ?? '-' }}</strong>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <!-- Right Column -->
@@ -97,11 +106,26 @@
                         </div>
                         <div class="d-flex align-items-center">
                             <div class="bg-light rounded-circle p-2 me-3">
-                                <i class="fas fa-clock text-primary"></i>
+                                <i class="fas fa-circle-info text-primary"></i>
                             </div>
                             <div>
                                 <small class="text-muted d-block">Status Aset</small>
-                                <strong>{{ $aset->status_formatted ?? '-' }}</strong>
+                                @switch($aset->status)
+                                    @case('rusak')
+                                        <span class="badge bg-danger">Rusak</span>
+                                    @break
+
+                                    @case('kurang_layak')
+                                        <span class="badge bg-warning text-dark">Kurang Layak</span>
+                                    @break
+
+                                    @case('baik')
+                                        <span class="badge bg-success">Baik</span>
+                                    @break
+
+                                    @default
+                                        <span class="badge bg-secondary">-</span>
+                                @endswitch
                             </div>
                         </div>
                     </div>
@@ -118,6 +142,29 @@
                 </div>
                 <div class="bg-light rounded p-3 mt-2">
                     {{ $aset->spek ?? '-' }}
+                </div>
+            </div>
+            <!-- Foto Section -->
+            <div class="mt-4">
+                <div class="d-flex align-items-center mb-2">
+                    <div class="bg-light rounded-circle p-2 me-3">
+                        <i class="fas fa-image text-primary"></i>
+                    </div>
+                    <h6 class="mb-0 fw-bold">Foto Aset</h6>
+                </div>
+                <div class="bg-light rounded p-3 mt-2 text-center">
+                    @if ($aset->foto_aset)
+                        <div class="d-flex justify-content-center" style="max-height: 250px; overflow: hidden;">
+                            <img src="{{ asset('storage/' . $aset->foto_aset) }}" alt="Foto Aset"
+                                class="img-fluid rounded"
+                                style="max-width: 100%; max-height: 250px; object-fit: contain;">
+                        </div>
+                    @else
+                        <p class="text-muted mb-0">
+                            <i class="fas fa-image me-2 opacity-50"></i>
+                            Tidak ada foto aset
+                        </p>
+                    @endif
                 </div>
             </div>
         </div>
@@ -173,7 +220,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="text-center py-4 text-muted">
+                                <td colspan="6" class="text-center py-4 text-muted">
                                     <i class="fas fa-info-circle me-2"></i>Belum ada riwayat kegiatan
                                 </td>
                             </tr>

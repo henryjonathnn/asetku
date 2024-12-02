@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('part_number')->nullable();
             $table->text('spek')->nullable();
             $table->string('pengguna')->nullable();
+            $table->string('lokasi')->nullable();
+            $table->string('foto_aset')->nullable();
             $table->year('tahun_kepemilikan')->nullable();
             $table->enum('status', ['rusak', 'kurang_layak', 'baik'])->nullable();
             $table->foreignId('id_kepemilikan')->nullable()->constrained('kepemilikans')->onDelete('cascade');

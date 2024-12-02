@@ -1,6 +1,26 @@
 @extends('layouts.app')
 
 @section('content')
+    <style>
+        .form-floating {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            /* Adjust to position icon */
+            transform: translateY(-50%);
+            color: #007bff;
+            /* Change to your preferred color */
+        }
+
+        .form-control {
+            padding-right: 30px;
+            /* Make space for the icon */
+        }
+    </style>
     <div class="container-fluid px-4">
         <!-- Page Header -->
         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -226,7 +246,7 @@
                     <h5 class="modal-title">Tambah Aset Baru</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form action="{{ route('aset.store') }}" method="POST" class="p-4">
+                <form action="{{ route('aset.store') }}" method="POST" class="p-4" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-body">
                         <div class="row g-4">
@@ -344,6 +364,22 @@
                                                 @endforeach
                                             </select>
                                             <label for="createKepemilikan">Kepemilikan</label>
+                                        </div>
+                                    </div>
+                                    <div class="row g-3 mt-2">
+                                        <div class="col-md-6">
+                                            <div class="form-floating">
+                                                <input type="text" name="lokasi" id="createLokasi"
+                                                    placeholder="lokasi" class="form-control">
+                                                <label for="createLokasi">Lokasi</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-floating">
+                                                <input type="file" name="foto_aset" id="createFotoAset"
+                                                    class="form-control" accept="image/*">
+                                                <label for="createFotoAset">Foto Aset</label>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

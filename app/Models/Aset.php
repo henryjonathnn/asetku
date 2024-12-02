@@ -17,6 +17,8 @@ class Aset extends Model
         'serial_number',
         'part_number',
         'spek',
+        'lokasi',
+        'foto_aset',
         'pengguna',
         'status',
         'tahun_kepemilikan',

@@ -60,9 +60,24 @@
                                 </div>
                             </div>
                             <div class="col-sm-6">
-                                <div class="d-flex flex-column">
-                                    <span class="text-muted small">Status Aset</span>
-                                    <span class="fw-medium">{{ $aset->status_formatted }}</span>
+                                <div>
+                                    <small class="text-muted d-block">Status Aset</small>
+                                    @switch($aset->status)
+                                        @case('rusak')
+                                            <span class="badge bg-danger">Rusak</span>
+                                        @break
+
+                                        @case('kurang_layak')
+                                            <span class="badge bg-warning text-dark">Kurang Layak</span>
+                                        @break
+
+                                        @case('baik')
+                                            <span class="badge bg-success">Baik</span>
+                                        @break
+
+                                        @default
+                                            <span class="badge bg-secondary">-</span>
+                                    @endswitch
                                 </div>
                             </div>
                         </div>
@@ -95,6 +110,22 @@
                                     <span class="fw-medium">{{ $kegiatan->count() }}</span>
                                 </div>
                             </div>
+                            <div class="col-sm-6">
+                                <div class="d-flex flex-column">
+                                    <span class="text-muted small">Lokasi</span>
+                                    <span class="fw-medium">{{ $aset->lokasi ?? '-' }}</span>
+                                </div>
+                            </div>
+                            @if ($aset->foto_aset)
+                                <div class="col-sm-6">
+                                    <div class="text-muted small mb-2">Foto Aset</div>
+                                    <div class="d-flex flex-column">
+                                        <img src="{{ asset('storage/' . $aset->foto_aset) }}" alt="Foto Aset"
+                                            class="img-thumbnail"
+                                            style="max-width: 100px; max-height: 250px; object-fit: cover;">
+                                    </div>
+                                </div>
+                            @endif
                         </div>
                     </div>
 
@@ -306,7 +337,7 @@
                     <h5 class="modal-title">Edit Data Aset</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form action="{{ route('kegiatan.update-master', $aset->id) }}" method="POST">
+                <form action="{{ route('kegiatan.update-master', $aset->id) }}" enctype="multipart/form-data" method="POST">
                     @csrf
                     @method('PUT')
                     <div class="modal-body">
@@ -409,6 +440,26 @@
                                         @endforeach
                                     </select>
                                     <label for="id_kepemilikan">Kepemilikan</label>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-floating">
+                                    <input type="text" name="lokasi" class="form-control" id="lokasi"
+                                        value="{{ $aset->lokasi }}" placeholder="Lokasi" required>
+                                    <label for="lokasi">Lokasi</label>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label for="foto_aset" class="form-label">Foto Aset</label>
+                                    <input type="file" class="form-control" id="foto_aset" name="foto_aset"
+                                        accept="image/*" onchange="previewAssetImage(this)">
+                                    <div id="assetImagePreview"
+                                        class="mt-2 @if (!$aset->foto_aset) d-none @endif">
+                                        <img src="{{ $aset->foto_aset ? asset('storage/' . $aset->foto_aset) : '' }}"
+                                            alt="Preview" class="img-thumbnail"
+                                            style="max-width: 300px; max-height: 250px; object-fit: cover;">
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-12">
