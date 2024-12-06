@@ -33,210 +33,129 @@
                 <span>Tambah Aset</span>
             </button>
         </div>
-        <!-- Search and Filter Card -->
-
-        <div class="card shadow-sm mb-4">
-            <div class="card-body">
-                <div class="row g-3">
-                    <!-- Search Input Group -->
-                    <div class="col-md-6">
-                        <div class="input-group">
-                            <span class="input-group-text bg-white border-end-0">
-                                <i class="fas fa-search text-muted"></i>
-                            </span>
-                            <input type="text" class="form-control border-start-0 ps-0" id="searchInput"
-                                placeholder="Cari aset...">
-                            <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#filterOptions">
-                                <i class="fas fa-filter me-1"></i> Filter
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Filter Collapse Section -->
-                    <div class="col-12 collapse" id="filterOptions">
-                        <div class="card card-body border-0 bg-light">
-                            <div class="row g-3">
-                                <div class="col-12">
-                                    <h6 class="mb-2">Cari berdasarkan:</h6>
-                                    <div class="d-flex gap-3 flex-wrap">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="searchById" checked>
-                                            <label class="form-check-label" for="searchById">
-                                                ID
-                                            </label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="searchByNama">
-                                            <label class="form-check-label" for="searchByNama">
-                                                Nama Barang
-                                            </label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="searchByJenis">
-                                            <label class="form-check-label" for="searchByJenis">
-                                                Jenis
-                                            </label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="searchByNomor">
-                                            <label class="form-check-label" for="searchByNomor">
-                                                Nomor Aset
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <!-- Assets List Card -->
         <div class="card shadow-sm">
-            <div class="card-body p-0">
+            <div class="card-body p-0 mx-4 my-2">
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
+                    <div class="mt-4 mb-3 ms-2">
+                        <button type="button" id="printSelected" class="btn btn-primary" disabled>
+                            <i class="fas fa-print me-2"></i>Cetak QR Code Terpilih
+                        </button>
+                    </div>
+                    <table id="data-table" class="table table-hover align-middle mb-0" style="width:100%">
                         <thead class="bg-light">
-                            <tr class="text-left">
-                                <div class="mt-4 ms-3">
-                                    <button type="button" id="printSelected" class="btn btn-primary" disabled>
-                                        <i class="fas fa-print me-2"></i>Cetak QR Code Terpilih
-                                    </button>
-                                </div>
-                                <th class="border-0 ps-4">
+                            <tr>
+                                <th>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="selectAll">
+                                        <input class="form-check-input selectAll" type="checkbox" id="selectAll">
                                     </div>
                                 </th>
-                                <th class="border-0 ps-4">No</th>
-                                <th class="border-0">Nomor Aset</th>
-                                <th class="border-0">Jenis</th>
-                                <th class="border-0">Nama Barang</th>
-                                <th class="border-0">Pengguna</th>
-                                <th class="border-0 rounded-end text-center">Aksi</th>
+                                <th>No</th>
+                                <th>Nomor Aset</th>
+                                <th>Jenis</th>
+                                <th>Nama Barang</th>
+                                <th>Pengguna</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            @foreach ($aset as $index => $item)
-                                <tr class="text-left">
-                                    <td class="ps-4">
-                                        <div class="form-check">
-                                            <input class="form-check-input aset-checkbox" type="checkbox"
-                                                value="{{ $item->id }}" name="selected_asets[]">
-                                        </div>
-                                    </td>
-                                    <td class="ps-4">
-                                        <span class="fw-medium">{{ $loop->iteration ?? '-' }}</span>
-                                    </td>
-                                    <td>
-                                        <div>
-                                            <span class="d-block fw-medium">{{ $item->nomor_aset ?? '-' }}</span>
-                                            <small class="text-muted">ID: {{ Str::afterLast($item->id, '-') }}</small>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-light text-dark">{{ $item->jenis->jenis ?? '-' }}</span>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex align-items-center gap-2">
-                                            <div class="bg-light rounded p-1">
-                                                <i class="fas fa-box text-primary"></i>
-                                            </div>
-                                            <div>
-                                                <span class="d-block fw-medium">{{ $item->nama_barang }}</span>
-                                                <small class="text-muted">SN: {{ $item->serial_number }}</small>
-                                                <small class="text-muted">PN: {{ $item->part_number }}</small>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex align-items-center gap-2">
-                                            <div class="bg-light rounded-circle p-1">
-                                                <i class="fas fa-user text-primary"></i>
-                                            </div>
-                                            <span>{{ $item->pengguna ?? '-' }}</span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex justify-content-center gap-1">
-                                            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
-                                                data-bs-target="#detailAsetModal" data-aset-id="{{ $item->id }}"
-                                                onclick="loadAsetDetail('{{ $item->id }}')">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-sm btn-warning text-white"
-                                                data-bs-toggle="modal" data-bs-target="#editAsetModal"
-                                                data-aset-id="{{ $item->id }}"
-                                                onclick="loadAsetEdit('{{ $item->id }}')">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-sm btn-info text-white"
-                                                onclick="loadBarcode('{{ $item->id }}')">
-                                                <i class="fas fa-qrcode"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
                     </table>
-                </div>
-
-                <!-- Pagination -->
-                <div class="d-flex justify-content-between align-items-center px-4 py-3 border-top">
-                    <div class="text-muted small">
-                        Menampilkan {{ $aset->firstItem() ?? 0 }} - {{ $aset->lastItem() ?? 0 }} dari
-                        {{ $aset->total() ?? 0 }} aset
-                    </div>
-
-                    @if ($aset->hasPages())
-                        <nav class="d-flex justify-content-end">
-                            <ul class="pagination mb-0">
-                                {{-- Previous Page Link --}}
-                                @if ($aset->onFirstPage())
-                                    <li class="page-item disabled">
-                                        <span class="page-link">&laquo;</span>
-                                    </li>
-                                @else
-                                    <li class="page-item">
-                                        <a class="page-link" href="{{ $aset->previousPageUrl() }}"
-                                            rel="prev">&laquo;</a>
-                                    </li>
-                                @endif
-
-                                {{-- Pagination Elements --}}
-                                @foreach ($aset->getUrlRange(1, $aset->lastPage()) as $page => $url)
-                                    @if ($page == $aset->currentPage())
-                                        <li class="page-item active">
-                                            <span class="page-link">{{ $page }}</span>
-                                        </li>
-                                    @else
-                                        <li class="page-item">
-                                            <a class="page-link" href="{{ $url }}">{{ $page }}</a>
-                                        </li>
-                                    @endif
-                                @endforeach
-
-                                {{-- Next Page Link --}}
-                                @if ($aset->hasMorePages())
-                                    <li class="page-item">
-                                        <a class="page-link" href="{{ $aset->nextPageUrl() }}"
-                                            rel="next">&raquo;</a>
-                                    </li>
-                                @else
-                                    <li class="page-item disabled">
-                                        <span class="page-link">&raquo;</span>
-                                    </li>
-                                @endif
-                            </ul>
-                        </nav>
-                    @endif
                 </div>
             </div>
         </div>
     </div>
+
+    {{-- <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light">
+                        <tr class="text-left">
+                            <div class="mt-4 ms-3">
+                                <button type="button" id="printSelected" class="btn btn-primary" disabled>
+                                    <i class="fas fa-print me-2"></i>Cetak QR Code Terpilih
+                                </button>
+                            </div>
+                            <th class="border-0 ps-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="selectAll">
+                                </div>
+                            </th>
+                            <th class="border-0 ps-4">No</th>
+                            <th class="border-0">Nomor Aset</th>
+                            <th class="border-0">Jenis</th>
+                            <th class="border-0">Nama Barang</th>
+                            <th class="border-0">Pengguna</th>
+                            <th class="border-0 rounded-end text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($aset as $index => $item)
+                            <tr class="text-left">
+                                <td class="ps-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input aset-checkbox" type="checkbox"
+                                            value="{{ $item->id }}" name="selected_asets[]">
+                                    </div>
+                                </td>
+                                <td class="ps-4">
+                                    <span class="fw-medium">{{ $loop->iteration ?? '-' }}</span>
+                                </td>
+                                <td>
+                                    <div>
+                                        <span class="d-block fw-medium">{{ $item->nomor_aset ?? '-' }}</span>
+                                        <small class="text-muted">ID: {{ Str::afterLast($item->id, '-') }}</small>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge bg-light text-dark">{{ $item->jenis->jenis ?? '-' }}</span>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="bg-light rounded p-1">
+                                            <i class="fas fa-box text-primary"></i>
+                                        </div>
+                                        <div>
+                                            <span class="d-block fw-medium">{{ $item->nama_barang }}</span>
+                                            <small class="text-muted">SN: {{ $item->serial_number }}</small>
+                                            <small class="text-muted">PN: {{ $item->part_number }}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="bg-light rounded-circle p-1">
+                                            <i class="fas fa-user text-primary"></i>
+                                        </div>
+                                        <span>{{ $item->pengguna ?? '-' }}</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="d-flex justify-content-center gap-1">
+                                        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                                            data-bs-target="#detailAsetModal" data-aset-id="{{ $item->id }}"
+                                            onclick="loadAsetDetail('{{ $item->id }}')">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-warning text-white"
+                                            data-bs-toggle="modal" data-bs-target="#editAsetModal"
+                                            data-aset-id="{{ $item->id }}"
+                                            onclick="loadAsetEdit('{{ $item->id }}')">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-info text-white"
+                                            onclick="loadBarcode('{{ $item->id }}')">
+                                            <i class="fas fa-qrcode"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div> --}}
 
     <!-- Create Modal -->
     <div class="modal fade" id="createAsetModal" tabindex="-1">
@@ -478,9 +397,257 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="customLengthModal" tabindex="-1" aria-labelledby="customLengthModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="customLengthModalLabel">Custom Page Length</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="number" id="customLengthInput" class="form-control" placeholder="Enter custom length">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="applyCustomLength">Apply</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     @push('scripts')
         <script>
+            $(document).ready(function() {
+                // $('.selectAll').click(function(e) {
+                //     $('.aset-checkbox').prop('checked', $(this).is(':checked'))
+                // })
+                $('#data-table').DataTable({
+                    ajax: {
+                        url: '{{ route('aset.datatables') }}',
+                        type: 'GET',
+                        dataType: 'json',
+                        dataSrc: 'data'
+                    },
+                    pageLength: 10,
+                    lengthMenu: [
+                        [10, 25, 50, 100, -1, 0], // Tambahkan 0 sebagai penanda custom
+                        ['10', '25', '50', '100', 'Semua', 'Custom']
+                    ],
+                    lengthChange: true,
+                    // dom: '<"custom-length"f>lrtip', // Menambahkan tempat untuk elemen kustom
+                    language: {
+                        lengthMenu: '_MENU_ entri per halaman'
+                    },
+                    initComplete: function() {
+                        var table = this.api();
+                        var $lengthSelect = $('select[name="data-table_length"]');
+
+                        // Handler untuk dropdown
+                        $lengthSelect.on('change', function() {
+                            var value = parseInt($(this).val());
+
+                            if (value === 0) {
+                                // Tampilkan modal jika dipilih "Custom"
+                                $('#customLengthModal').modal('show');
+
+                                // Reset dropdown ke pilihan sebelumnya
+                                $lengthSelect.val(table.page.len());
+                            } else {
+                                // Proses panjang halaman normal
+                                table.page.len(value === -1 ? table.page.info().recordsTotal :
+                                    value).draw();
+                            }
+                        });
+
+                        // Handler untuk tombol terapkan di modal
+                        $('#applyCustomLength').on('click', function() {
+                            var customLength = parseInt($('#customLengthInput').val());
+
+                            if (customLength > 0) {
+                                table.page.len(customLength).draw();
+                                $('#customLengthModal').modal('hide');
+
+                                // Cari opsi "Custom" di dropdown
+                                var $customOption = $lengthSelect.find('option[value="0"]');
+
+                                // Jika ada, perbarui teksnya
+                                if ($customOption.length) {
+                                    $customOption.text('Custom (' + customLength + ')');
+                                } else {
+                                    // Jika tidak ada, tambahkan opsi baru
+                                    $lengthSelect.append(
+                                        $('<option>', {
+                                            value: 0,
+                                            text: 'Custom (' + customLength + ')'
+                                        })
+                                    );
+                                }
+                                $lengthSelect.val(0);
+                            } else {
+                                alert('Masukkan angka valid');
+                            }
+                        });
+                    },
+                    columns: [{
+                            data: null,
+                            orderable: false,
+                            searchable: false,
+                            render: function(data) {
+                                return `<input type="checkbox" value="${data.id}" class="form-check-input aset-checkbox">`;
+                            }
+                        },
+                        {
+                            targets: 0,
+                            data: null,
+                            render: function(data, type, row, meta) {
+                                return meta.row + 1;
+                            }
+                        },
+                        {
+                            data: null,
+                            render: function(data) {
+                                return `
+            <div class="d-flex align-items-center gap-2">
+              <div>
+                <span class="d-block fw-medium">${data.nomor_aset || '-'}</span>
+                <small class="text-muted">ID: ${data.id || '-'}</small>
+              </div>
+            </div>
+          `;
+                            }
+                        },
+                        {
+                            data: 'jenis',
+                            name: 'jenis',
+                            render: function(data) {
+                                // Pastikan `data` ada dan memiliki properti `jenis`
+                                return data && data.jenis ?
+                                    `<span class="badge bg-light text-dark">${data.jenis}</span>` :
+                                    '<span class="badge bg-light text-dark">-</span>';
+                            }
+                        }, {
+                            data: null,
+                            render: function(data) {
+                                return `
+            <div class="d-flex align-items-center gap-2">
+              <div class="bg-light rounded p-1">
+                <i class="fas fa-box text-primary"></i>
+              </div>
+              <div>
+                <span class="d-block fw-medium">${data.nama_barang || '-'}</span>
+                <small class="text-muted">SN: ${data.serial_number || '-'}</small>
+                <small class="text-muted">PN: ${data.part_number || '-'}</small>
+              </div>
+            </div>
+          `;
+                            }
+                        },
+                        {
+                            data: null,
+                            render: function(data) {
+                                return `
+            <div class="d-flex align-items-center gap-2">
+                <div class="bg-light rounded p-1">
+                <i class="fas fa-user text-primary"></i>
+              </div>
+              <div>
+                <span class="text-muted">${data.pengguna || '-'}</span>
+              </div>
+            </div>
+          `;
+                            }
+                        },
+                        {
+                            data: null,
+                            orderable: false,
+                            searchable: false,
+                            render: function(data) {
+                                return `
+            <div class="d-flex justify-content-center gap-1">
+              <button type="button" class="btn btn-sm btn-primary" 
+                data-bs-toggle="modal" data-bs-target="#detailAsetModal" 
+                data-aset-id="${data.id}" 
+                onclick="loadAsetDetail('${data.id}')">
+                <i class="fas fa-eye"></i>
+              </button>
+              <button type="button" class="btn btn-sm btn-warning text-white" 
+                data-bs-toggle="modal" data-bs-target="#editAsetModal" 
+                data-aset-id="${data.id}" 
+                onclick="loadAsetEdit('${data.id}')">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button type="button" class="btn btn-sm btn-info text-white" 
+                onclick="loadBarcode('${data.id}')">
+                <i class="fas fa-qrcode"></i>
+              </button>
+            </div>
+          `;
+                            }
+                        }
+                    ],
+                    drawCallback: function() {
+                        // Checkbox semua
+                        $('.selectAll').on('change', function() {
+                            $('.aset-checkbox').prop('checked', $(this).is(':checked'));
+                            updatePrintButtonState();
+                        });
+
+                        // Checkbox individual
+                        $('.aset-checkbox').on('change', function() {
+                            updatePrintButtonState();
+                        });
+                    }
+                });
+
+                function updatePrintButtonState() {
+                    var checkedBoxes = $('.aset-checkbox:checked');
+                    $('#printSelected').prop('disabled', checkedBoxes.length === 0);
+                }
+
+                // Handler print
+                $('#printSelected').on('click', function(e) {
+                    e.preventDefault();
+                    var selectedAsets = $('.aset-checkbox:checked').map(function() {
+                        return $(this).val();
+                    }).get();
+
+                    if (selectedAsets.length === 0) {
+                        alert('Pilih minimal satu aset untuk dicetak');
+                        return;
+                    }
+
+                    // Buat form dinamis
+                    var $form = $('<form>', {
+                        'action': "{{ route('barcode.print-multiple') }}",
+                        'method': 'POST',
+                        'target': '_blank'
+                    });
+
+                    // Tambah token CSRF
+                    $form.append($('<input>').attr({
+                        type: 'hidden',
+                        name: '_token',
+                        value: $('meta[name="csrf-token"]').attr('content')
+                    }));
+
+                    // Tambah aset yang dipilih
+                    selectedAsets.forEach(function(asetId) {
+                        $form.append($('<input>').attr({
+                            type: 'hidden',
+                            name: 'selected_asets[]',
+                            value: asetId
+                        }));
+                    });
+
+                    // Tambah dan submit form
+                    $('body').append($form);
+                    $form.submit();
+                    $form.remove();
+                });
+            });
+
+
             class YearSelectorModal {
                 constructor() {
                     this.yearGrid = document.getElementById("yearGrid");
@@ -488,15 +655,15 @@
                     this.startYear = 2017;
                     this.endYear = 2032;
                     this.selectedYear = new Date().getFullYear();
+                    this.yearSelectorModal = document.getElementById('yearSelectorModal');
                     this.targetInput = null;
-                    this.currentModalInstance = null;
                     this.parentModalId = null;
 
                     this.initialize();
                 }
 
                 initialize() {
-                    // Initialize navigation buttons
+                    // Navigation buttons
                     document.getElementById("prevYearRange").addEventListener("click", () => {
                         this.startYear -= 16;
                         this.endYear -= 16;
@@ -509,26 +676,25 @@
                         this.generateYearGrid();
                     });
 
-                    // Initialize year selector modal events
-                    const yearSelectorModal = document.getElementById('yearSelectorModal');
-                    yearSelectorModal.addEventListener('show.bs.modal', (event) => {
+                    // Modal show event
+                    this.yearSelectorModal.addEventListener('show.bs.modal', (event) => {
                         const button = event.relatedTarget;
                         const input = button.closest('.form-floating').querySelector('input');
+
                         if (input) {
                             this.targetInput = input;
                             this.selectedYear = parseInt(input.value) || new Date().getFullYear();
-                            // Store the parent modal ID
                             this.parentModalId = input.id === 'createTahun' ? 'createAsetModal' : 'editAsetModal';
                             this.generateYearGrid();
                         }
                     });
 
-                    // Store modal reference when it's opened
-                    yearSelectorModal.addEventListener('shown.bs.modal', () => {
-                        this.currentModalInstance = bootstrap.Modal.getInstance(yearSelectorModal);
-                    });
+                    // Close button handler
+                    const closeButton = this.yearSelectorModal.querySelector('.btn-close');
+                    if (closeButton) {
+                        closeButton.addEventListener('click', () => this.closeModal());
+                    }
 
-                    // Setup year inputs
                     this.setupYearInputs();
                 }
 
@@ -544,8 +710,7 @@
                     ];
 
                     yearInputs.forEach(({
-                        id,
-                        modalId
+                        id
                     }) => {
                         const input = document.getElementById(id);
                         if (input) {
@@ -584,38 +749,54 @@
                             button.classList.add('btn-primary', 'text-white');
                         }
 
-                        button.addEventListener('click', () => this.handleYearSelection(year));
+                        button.addEventListener('click', () => this.selectYear(year));
                         yearButton.appendChild(button);
                         this.yearGrid.appendChild(yearButton);
                     }
                     this.yearRange.textContent = `${this.startYear} - ${this.endYear}`;
                 }
 
-                handleYearSelection(year) {
+                selectYear(year) {
                     if (this.targetInput) {
-                        this.targetInput.value = year;
-
-                        // Close the year selector modal
-                        if (this.currentModalInstance) {
-                            this.currentModalInstance.hide();
+                        // Pastikan ada perubahan sebelum menutup modal
+                        if (this.targetInput.value !== year.toString()) {
+                            this.targetInput.value = year;
+                            this.closeModal(true);
+                        } else {
+                            // Jika tahun sama, tetap tutup modal
+                            this.closeModal();
                         }
+                    }
+                }
 
-                        // Show the parent modal after a short delay
+                closeModal(yearSelected = false) {
+                    // Get modal instances
+                    const yearModalInstance = bootstrap.Modal.getInstance(this.yearSelectorModal);
+
+                    if (yearModalInstance) {
+                        // Hide year selector modal
+                        yearModalInstance.hide();
+
+                        // Delay untuk transisi yang halus
                         setTimeout(() => {
+                            // Hapus backdrop
+                            const backdrop = document.querySelector('.modal-backdrop');
+                            if (backdrop) backdrop.remove();
+
+                            // Hapus kelas modal
+                            document.body.classList.remove('modal-open');
+                            document.body.style.overflow = '';
+                            document.body.style.paddingRight = '';
+
+                            // Buka kembali modal induk jika ada
                             if (this.parentModalId) {
                                 const parentModal = document.getElementById(this.parentModalId);
                                 if (parentModal) {
-                                    const parentModalInstance = bootstrap.Modal.getInstance(parentModal);
-                                    if (!parentModalInstance) {
-                                        // If modal instance doesn't exist, create new one
-                                        new bootstrap.Modal(parentModal).show();
-                                    } else {
-                                        // If modal instance exists, show it
-                                        parentModalInstance.show();
-                                    }
+                                    const parentModalInstance = new bootstrap.Modal(parentModal);
+                                    parentModalInstance.show();
                                 }
                             }
-                        }, 150); // Small delay to ensure smooth transition
+                        }, 300);
                     }
                 }
             }
@@ -624,8 +805,8 @@
             // Main initialization
             document.addEventListener('DOMContentLoaded', function() {
                 const elements = {
-                    selectAll: document.getElementById('selectAll'),
-                    asetCheckboxes: document.querySelectorAll('.aset-checkbox'),
+                    selectAll: document.querySelector('.selectAll'),
+                    asetCheckboxes: document.querySelectorAll('#aset-checkbox'),
                     printSelected: document.getElementById('printSelected'),
                     photoViewModal: document.getElementById('photoViewModal'),
                     modalPhotoPreview: document.getElementById('modalPhotoPreview'),
@@ -636,96 +817,48 @@
                     fileInput: document.querySelector('#foto')
                 };
 
-                const searchInput = document.getElementById('searchInput');
-                const searchById = document.getElementById('searchById');
-                const searchByNama = document.getElementById('searchByNama');
-                const searchByJenis = document.getElementById('searchByJenis');
-                const searchByNomor = document.getElementById('searchByNomor');
-                const tableRows = document.querySelectorAll('table tbody tr');
-
-                function filterTable() {
-                    const searchTerm = searchInput.value.toLowerCase();
-
-                    tableRows.forEach(row => {
-                        let showRow = false;
-
-                        if (searchTerm === '') {
-                            showRow = true;
-                        } else {
-                            // Check ID (only the part after the last '-')
-                            if (searchById.checked) {
-                                const idCell = row.querySelector('td:nth-child(3)');
-                                const idText = idCell.querySelector('small').textContent;
-                                const idNumber = idText.split('ID: ')[1];
-                                if (idNumber.toLowerCase().includes(searchTerm)) {
-                                    showRow = true;
-                                }
-                            }
-
-                            // Check Nama Barang
-                            if (searchByNama.checked) {
-                                const namaCell = row.querySelector('td:nth-child(5)');
-                                const namaText = namaCell.querySelector('.fw-medium').textContent;
-                                if (namaText.toLowerCase().includes(searchTerm)) {
-                                    showRow = true;
-                                }
-                            }
-
-                            // Check Jenis
-                            if (searchByJenis.checked) {
-                                const jenisCell = row.querySelector('td:nth-child(4)');
-                                const jenisText = jenisCell.textContent;
-                                if (jenisText.toLowerCase().includes(searchTerm)) {
-                                    showRow = true;
-                                }
-                            }
-
-                            // Check Nomor Aset
-                            if (searchByNomor.checked) {
-                                const nomorCell = row.querySelector('td:nth-child(3)');
-                                const nomorText = nomorCell.querySelector('.fw-medium').textContent;
-                                if (nomorText.toLowerCase().includes(searchTerm)) {
-                                    showRow = true;
-                                }
-                            }
-                        }
-
-                        row.style.display = showRow ? '' : 'none';
-                    });
+                if (printSelected) {
+                    printSelected.addEventListener('click', handlePrintSelected);
                 }
 
-                // Add event listeners
-                searchInput.addEventListener('input', filterTable);
-                searchById.addEventListener('change', filterTable);
-                searchByNama.addEventListener('change', filterTable);
-                searchByJenis.addEventListener('change', filterTable);
-                searchByNomor.addEventListener('change', filterTable);
+                function cleanCloseModal(modalElement) {
+                    // Tutup modal
+                    const modalInstance = bootstrap.Modal.getInstance(modalElement);
+                    if (modalInstance) {
+                        modalInstance.hide();
+                    }
 
-                // Ensure at least one checkbox is checked
-                function updateCheckboxStates() {
-                    const checkboxes = [searchById, searchByNama, searchByJenis, searchByNomor];
-                    const checkedCount = checkboxes.filter(cb => cb.checked).length;
+                    // Hapus backdrop secara manual
+                    const backdrop = document.querySelector('.modal-backdrop');
+                    if (backdrop) {
+                        backdrop.remove();
+                    }
 
-                    checkboxes.forEach(checkbox => {
-                        checkbox.disabled = checkbox.checked && checkedCount === 1;
-                    });
+                    // Hapus class modal-open dari body
+                    document.body.classList.remove('modal-open');
                 }
-
-                [searchById, searchByNama, searchByJenis, searchByNomor].forEach(checkbox => {
-                    checkbox.addEventListener('change', updateCheckboxStates);
-                });
-
-                // Initial call
-                updateCheckboxStates();
 
 
                 // Initialize year selector
                 // const yearSelector = new YearSelectorModal();
                 new YearSelectorModal();
 
+                const createModal = document.getElementById('createAsetModal');
+                if (createModal) {
+                    createModal.addEventListener('show.bs.modal', function() {
+                        cleanCloseModal(this);
+                        // Pastikan input tahun di modal edit sudah disetup
+                        const createTahunInput = document.getElementById('createTahun');
+                        if (createTahunInput) {
+                            yearSelector.setupYearInputForElement(createTahunInput, 'createAsetModal');
+                        }
+                    });
+                }
+
                 const editModal = document.getElementById('editAsetModal');
                 if (editModal) {
                     editModal.addEventListener('show.bs.modal', function() {
+                        cleanCloseModal(this);
                         // Pastikan input tahun di modal edit sudah disetup
                         const editYearInput = document.getElementById('editTahun');
                         if (editYearInput) {
@@ -765,6 +898,8 @@
                 initializeModalHandlers();
             });
 
+
+
             // Photo handling functions
             function initializePhotoHandlers() {
                 // Global click handler for photo viewing
@@ -796,7 +931,7 @@
             // Checkbox handling functions
             function initializeCheckboxHandlers() {
                 const selectAll = document.getElementById('selectAll');
-                const asetCheckboxes = document.querySelectorAll('.aset-checkbox');
+                const asetCheckboxes = document.querySelectorAll('#aset-checkbox');
                 const printSelected = document.getElementById('printSelected');
 
                 // Select All checkbox handler
@@ -804,7 +939,7 @@
                     asetCheckboxes.forEach(checkbox => {
                         checkbox.checked = this.checked;
                     });
-                    updatePrintButtonState();
+                    // updatePrintButtonState();
                 });
 
                 // Individual checkboxes handler
@@ -813,7 +948,7 @@
                         const allChecked = Array.from(asetCheckboxes).every(cb => cb.checked);
                         const anyChecked = Array.from(asetCheckboxes).some(cb => cb.checked);
                         selectAll.checked = allChecked;
-                        updatePrintButtonState();
+                        // updatePrintButtonState();
                     });
                 });
 
@@ -839,39 +974,115 @@
                 photoModal.show();
             }
 
-            function updatePrintButtonState() {
-                const asetCheckboxes = document.querySelectorAll('.aset-checkbox');
-                const printSelected = document.getElementById('printSelected');
-                const checkedBoxes = Array.from(asetCheckboxes).filter(cb => cb.checked);
-                if (printSelected) {
-                    printSelected.disabled = checkedBoxes.length === 0;
-                }
-            }
+            // // Checkbox and print handling
+            // function updatePrintButtonState() {
+            //     const checkedBoxes = document.querySelectorAll('.aset-checkbox:checked');
+            //     if (printSelected) {
+            //         // Aktifkan tombol cetak jika ada setidaknya satu checkbox yang dipilih
+            //         printSelected.disabled = checkedBoxes.length === 0;
+            //     }
+            // }
+
+            // // Select All fungsi
+            // if (selectAll) {
+            //     selectAll.addEventListener('click', function() {
+            //         const checkboxes = document.querySelectorAll('.aset-checkbox');
+            //         checkboxes.forEach(checkbox => {
+            //             checkbox.checked = selectAll.checked;
+            //         });
+            //         // updatePrintButtonState();
+            //     });
+            // }
+
+            // const checkboxes = document.querySelectorAll('.aset-checkbox');
+            // checkboxes.forEach(checkbox => {
+            //     checkbox.addEventListener('change', function() {
+            //         // Update Select All checkbox jika semua checkbox dipilih
+            //         const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+            //         if (selectAll) {
+            //             selectAll.checked = allChecked;
+            //         }
+            //         // updatePrintButtonState();
+            //     });
+            // });
+
+            // // Print Selected handler
+            // if (printSelected) {
+            //     printSelected.addEventListener('click', function(e) {
+            //         e.preventDefault();
+
+            //         const selectedAsets = Array.from(document.querySelectorAll('.aset-checkbox:checked'))
+            //             .map(checkbox => checkbox.value);
+
+            //         if (selectedAsets.length === 0) {
+            //             alert('Pilih minimal satu aset untuk dicetak');
+            //             return;
+            //         }
+
+            //         // Create and submit form
+            //         const form = document.createElement('form');
+            //         form.method = 'POST';
+            //         form.action = "{{ route('barcode.print-multiple') }}";
+            //         form.target = '_blank';
+
+            //         // Add CSRF token
+            //         const csrfToken = document.querySelector('meta[name="csrf-token"]');
+            //         if (csrfToken) {
+            //             const csrfInput = document.createElement('input');
+            //             csrfInput.type = 'hidden';
+            //             csrfInput.name = '_token';
+            //             csrfInput.value = csrfToken.content;
+            //             form.appendChild(csrfInput);
+            //         }
+
+            //         // Add selected assets
+            //         selectedAsets.forEach(asetId => {
+            //             const input = document.createElement('input');
+            //             input.type = 'hidden';
+            //             input.name = 'selected_asets[]';
+            //             input.value = asetId;
+            //             form.appendChild(input);
+            //         });
+
+            //         // Submit form
+            //         document.body.appendChild(form);
+            //         form.submit();
+            //         document.body.removeChild(form);
+            //     });
+            // }
+
+            // Initial state
+            // updatePrintButtonState();
+
 
             function handlePrintSelected(e) {
                 e.preventDefault();
-                const asetCheckboxes = document.querySelectorAll('.aset-checkbox');
-                const selectedAsets = Array.from(asetCheckboxes)
-                    .filter(cb => cb.checked)
-                    .map(cb => cb.value);
+                const asetCheckboxes = document.querySelectorAll('.aset-checkbox:checked');
+                const selectedAsets = Array.from(asetCheckboxes).map(cb => cb.value);
 
                 if (selectedAsets.length === 0) {
                     alert('Pilih minimal satu aset untuk dicetak');
                     return;
                 }
 
-                // Create form for printing
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = '/aset/print-multiple'; // Pastikan URL ini sesuai dengan route Anda
-                form.target = '_blank'; // Buka di tab baru
+                // Debugging
+                console.log('Selected Asets:', selectedAsets);
+
+                // // Create form for printing
+                // const form = document.createElement('form');
+                // form.method = 'POST';
+                // form.action = "{{ route('barcode.print-multiple') }}"; // Pastikan route name benar
+                // form.target = '_blank';
 
                 // Add CSRF token
-                const csrfInput = document.createElement('input');
-                csrfInput.type = 'hidden';
-                csrfInput.name = '_token';
-                csrfInput.value = document.querySelector('meta[name="csrf-token"]').content;
-                form.appendChild(csrfInput);
+                const csrfToken = document.querySelector('meta[name="csrf-token"]');
+                if (csrfToken) {
+                    const csrfInput = document.createElement('input');
+                    csrfInput.type = 'hidden';
+                    csrfInput.name = '_token';
+                    csrfInput.value = csrfToken.content;
+                    form.appendChild(csrfInput);
+                }
 
                 // Add selected assets
                 selectedAsets.forEach(asetId => {
@@ -960,9 +1171,6 @@
     @push('styles')
         <style>
             /* Custom Styles */
-            .table> :not(caption)>*>* {
-                padding: 1rem 0.75rem;
-            }
 
             .badge {
                 font-weight: 500;

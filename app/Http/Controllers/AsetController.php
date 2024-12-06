@@ -8,6 +8,7 @@ use App\Models\Jenis;
 use App\Models\Kegiatan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class AsetController extends Controller
@@ -15,7 +16,7 @@ class AsetController extends Controller
     public function index()
     {
 
-        $aset = Aset::with(['kepemilikan', 'kegiatan'])->paginate(10);
+        $aset = Aset::with(['kepemilikan', 'kegiatan'])->get();
 
         $kepemilikan = Kepemilikan::active()->get();
         $jenis = Jenis::active()->get();
@@ -24,6 +25,30 @@ class AsetController extends Controller
         return view('aset.index', compact('aset', 'kepemilikan', 'jenis', 'kegiatan'));
     }
 
+    public function datatables(Request $request)
+    {
+        $aset = Aset::with('jenis')->get();
+
+        if ($aset) {
+            return response()->json([
+                'draw' => $request->draw, // Required for DataTables
+                'recordsTotal' => $aset->count(),
+                'recordsFiltered' => $aset->count(),
+                'data' => $aset // Data should be under 'data' key
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'Error',
+                'code' => 500
+            ]);
+        }
+    }
+
+
+    // public function show()
+    // {
+    //     return "halo guys";
+    // }
 
     public function detail(string $uuid)
     {

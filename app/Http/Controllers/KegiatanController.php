@@ -78,7 +78,7 @@ class KegiatanController extends Controller
 
             $storagePath = 'kegiatan/' . $fileName;
 
-            $image = imagecreatefromjpeg($file->getRealPath());
+            $image = imagecreatefromstring(file_get_contents($file->getRealPath()));
 
             $width = imagesx($image);
             $height = imagesy($image);

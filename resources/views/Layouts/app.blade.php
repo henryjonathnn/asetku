@@ -12,6 +12,8 @@
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.bootstrap5.css" />
 
     <!-- Custom CSS -->
     <style>
@@ -116,6 +118,10 @@
             white-space: nowrap;
         }
 
+        .dropdown-menu.show {
+            display: block;
+        }
+
         .user-section {
             margin-left: auto;
             padding-right: 15px;
@@ -182,9 +188,11 @@
             <div class="navbar-container">
                 <div class="branding-section">
                     <div class="logo-section">
-                        <div class="logo-container">
-                            <img src="/img/logo.png" alt="Logo RSUD">
-                        </div>
+                        <a href={{ route('aset.index') }}>
+                            <div class="logo-container">
+                                <img src="/img/logo.png" alt="Logo RSUD">
+                            </div>
+                        </a>
                         <div class="hospital-info">
                             <h1 class="hospital-name">RSUD Daha Husada</h1>
                             <h3 class="hospital-location">Kota Kediri</h3>
@@ -203,7 +211,7 @@
                         <div class="contact-info-item">
                             <i class="fas fa-globe"></i>
                             <a class="text-white" href="https://rsuddahahusada.jatimprov.go.id/"
-                            target="_blank">rsuddahahusada.jatimprov.go.id</a>
+                                target="_blank">rsuddahahusada.jatimprov.go.id</a>
                         </div>
                     </div>
                 </div>
@@ -255,6 +263,12 @@
 
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.bootstrap5.js"></script>
 
     <!-- Sweet Alert -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -331,6 +345,24 @@
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var dropdownToggle = document.querySelector('.user-dropdown');
+
+            if (dropdownToggle) {
+                dropdownToggle.addEventListener('click', function(e) {
+                    console.log('Dropdown clicked');
+
+                    // Force toggle dropdown manually
+                    var dropdownMenu = this.nextElementSibling;
+                    if (dropdownMenu && dropdownMenu.classList.contains('dropdown-menu')) {
+                        dropdownMenu.classList.toggle('show');
+                        this.setAttribute('aria-expanded', this.getAttribute('aria-expanded') === 'true' ?
+                            'false' : 'true');
+                    }
+                });
             }
         });
     </script>

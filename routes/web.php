@@ -21,12 +21,15 @@ use Illuminate\Support\Facades\Route;
 
 // ASET
 Route::middleware('auth')->group(function () {
-    Route::resource('aset', AsetController::class)->parameters([
-        'aset' => 'uuid'
-    ]);
-    
+    Route::get('aset', [AsetController::class, 'index'])->name('aset.index');
+    Route::get('aset/{uuid}/edit', [AsetController::class, 'edit'])->name('aset.edit');
+    Route::post('aset', [AsetController::class, 'store'])->name('aset.store');
+    Route::put('aset/{uuid}', [AsetController::class, 'update'])->name('aset.update');
+    Route::delete('aset/{uuid}', [AsetController::class, 'destroy'])->name('aset.destroy');
+    Route::get('aset/datatables', [AsetController::class, 'datatables'])->name('aset.datatables');
+
     Route::get('/', function () {
-        return view('welcome');
+        return redirect('/aset');
     });
 
     // BARCODE
@@ -56,3 +59,4 @@ Route::delete('aset/{uuid}/kegiatan/{kegiatan}', [KegiatanController::class, 'de
 Route::get('/login', [AuthController::class, 'loginForm']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/aset/datatables', [AsetController::class, 'datatables'])->name('aset.datatables');
