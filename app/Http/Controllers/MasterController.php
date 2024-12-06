@@ -17,6 +17,8 @@ class MasterController extends Controller
             $data = Jenis::orderBy('created_at', 'desc')->get();
         } else if ($type === 'kepemilikan') {
             $data = Kepemilikan::orderBy('created_at', 'desc')->get();
+        } else {
+            abort(404);
         }
         
         return view('master.index', compact('data', 'type'));

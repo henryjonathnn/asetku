@@ -209,9 +209,9 @@
         <script>
             $(document).ready(function() {
                 $('#masterTable').DataTable({
-                    "language": {
-                        "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Indonesian.json"
-                    }
+                    // "language": {
+                    //     "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Indonesian.json"
+                    // }
                 });
 
                 // Show modal if there are validation errors

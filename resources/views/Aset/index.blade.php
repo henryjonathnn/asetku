@@ -431,7 +431,7 @@
                     },
                     pageLength: 10,
                     lengthMenu: [
-                        [10, 25, 50, 100, -1, 0], // Tambahkan 0 sebagai penanda custom
+                        [10, 25, 50, 100, -1, 0], // 
                         ['10', '25', '50', '100', 'Semua', 'Custom']
                     ],
                     lengthChange: true,
@@ -454,7 +454,7 @@
                                 // Reset dropdown ke pilihan sebelumnya
                                 $lengthSelect.val(table.page.len());
                             } else {
-                                // Proses panjang halaman normal
+                                // Proses menu.length normal
                                 table.page.len(value === -1 ? table.page.info().recordsTotal :
                                     value).draw();
                             }
@@ -850,7 +850,7 @@
                         // Pastikan input tahun di modal edit sudah disetup
                         const createTahunInput = document.getElementById('createTahun');
                         if (createTahunInput) {
-                            yearSelector.setupYearInputForElement(createTahunInput, 'createAsetModal');
+                            // yearSelector.setupYearInputForElement(createTahunInput, 'createAsetModal');
                         }
                     });
                 }
@@ -862,7 +862,7 @@
                         // Pastikan input tahun di modal edit sudah disetup
                         const editYearInput = document.getElementById('editTahun');
                         if (editYearInput) {
-                            yearSelector.setupYearInputForElement(editYearInput, 'editAsetModal');
+                            // yearSelector.setupYearInputForElement(editYearInput, 'editAsetModal');
                         }
                     });
                 }
