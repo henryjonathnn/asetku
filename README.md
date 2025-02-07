@@ -22,7 +22,7 @@
 
 ## Tech Stack  
 <p>  
-  <img src="https://skillicons.dev/icons?i=mysql,laravel,tailwind,datatable,jqeury&perline=6" />  
+  <img src="https://skillicons.dev/icons?i=mysql,laravel,tailwind,jquery&perline=6" />  
 </p>  
 
 ## Quick Start  
