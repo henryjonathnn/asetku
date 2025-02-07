@@ -22,14 +22,14 @@
 
 ## Tech Stack  
 <p>  
-  <img src="https://skillicons.dev/icons?i=mysql,laravel,react,vite,tailwind,docker&perline=6" />  
+  <img src="https://skillicons.dev/icons?i=mysql,laravel,tailwind,datatable,jqeury&perline=6" />  
 </p>  
 
 ## Quick Start  
 
 ```bash  
 # Clone repository  
-git clone https://github.com/yourusername/asetku.git  
+git clone https://github.com/henryjonathnn/asetku.git  
 
 # Install dependencies  
 cd asetku && npm install  
@@ -43,7 +43,7 @@ Want to try AsetKu demo version? Visit [AsetKu](https://asetku-demo.vercel.app/)
 
 ## Support  
 - Docs: [docs.asetku.com](https://github.com/henryjonathnn/asetku)  
-- Issues: [github.com/yourusername/asetku/issues](https://github.com/henryjonathnn/asetku/issues)  
+- Issues: [github.com/henryjonathnn/asetku/issues](https://github.com/henryjonathnn/asetku/issues)  
 
 ## License  
 © 2025 HyuraDev. All rights reserved.
